@@ -694,7 +694,7 @@ textarea:focus,
 }
 
 /* =========================================================
-   SHARED
+   OUR SPACE
    ========================================================= */
 
 .shared-box {
@@ -705,6 +705,295 @@ textarea:focus,
 .shared-icon {
     font-size: 45px;
     margin-bottom: 12px;
+}
+
+.space-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    padding: 8px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(217,170,91,.2);
+    background: rgba(217,170,91,.07);
+    color: var(--gold-light);
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.space-stack {
+    display: grid;
+    gap: 13px;
+    margin-top: 18px;
+    text-align: left;
+}
+
+.profile-preview {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px;
+    border-radius: 17px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.025);
+}
+
+.profile-avatar {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, rgba(217,170,91,.25), rgba(127,155,114,.18));
+    border: 1px solid rgba(217,170,91,.18);
+    font-weight: 850;
+    color: var(--gold-light);
+}
+
+.profile-name {
+    font-weight: 800;
+}
+
+.profile-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.friend-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.friend-row .input {
+    flex: 1;
+}
+
+.friends-panel {
+    display: grid;
+    gap: 11px;
+    margin-top: 18px;
+}
+
+.friend-card {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.025);
+    color: var(--cream);
+    border-radius: 18px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    transition: .2s ease;
+}
+
+.friend-card:hover {
+    border-color: rgba(217,170,91,.35);
+    transform: translateY(-2px);
+}
+
+.friend-card-avatar {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(127,155,114,.13);
+    border: 1px solid rgba(127,155,114,.25);
+    color: var(--green-light);
+    font-weight: 850;
+}
+
+.friend-card-copy {
+    min-width: 0;
+    flex: 1;
+}
+
+.friend-card-name {
+    font-weight: 850;
+}
+
+.friend-card-preview {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.friend-card-arrow {
+    color: var(--gold-light);
+    font-size: 20px;
+}
+
+.our-space-view {
+    display: block;
+}
+
+.our-space-view.hidden {
+    display: none;
+}
+
+.chat-page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 18px;
+}
+
+.chat-back {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--cream);
+}
+
+.chat-page-title {
+    min-width: 0;
+}
+
+.chat-page-title h2 {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    margin: 0;
+}
+
+.chat-page-title p {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.chat-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+}
+
+.chat-top {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.chat-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(127,155,114,.13);
+    border: 1px solid rgba(127,155,114,.25);
+}
+
+.chat-name {
+    font-weight: 800;
+}
+
+.chat-presence {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.chat-messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 22px 0;
+    min-height: 290px;
+}
+
+.chat-empty {
+    margin: auto;
+    text-align: center;
+    color: var(--muted);
+    max-width: 360px;
+    line-height: 1.6;
+}
+
+.chat-empty .emoji {
+    display: block;
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.message {
+    max-width: 82%;
+    padding: 11px 14px;
+    border-radius: 17px;
+    line-height: 1.45;
+    font-size: 14px;
+}
+
+.message.mine {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: #1a130b;
+    border-bottom-right-radius: 6px;
+}
+
+.message.theirs {
+    align-self: flex-start;
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    border-bottom-left-radius: 6px;
+}
+
+.message-time {
+    display: block;
+    margin-top: 4px;
+    opacity: .7;
+    font-size: 10px;
+}
+
+.chat-compose {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.chat-compose textarea {
+    min-height: 52px;
+    max-height: 130px;
+}
+
+.space-note {
+    margin-top: 13px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+    .friend-row,
+    .chat-compose {
+        flex-direction: column;
+    }
+
+    .friend-row .btn,
+    .chat-compose .btn {
+        width: 100%;
+    }
+
+    .chat-shell {
+        min-height: 430px;
+    }
 }
 
 /* =========================================================
@@ -913,8 +1202,8 @@ textarea:focus,
     </div>
 
     <div class="top-actions">
-        <button class="icon-button" onclick="showPage('shared')" aria-label="Shared space">
-            👭
+        <button class="icon-button" onclick="showPage('shared')" aria-label="Our Space">
+            👥
         </button>
     </div>
 
@@ -950,8 +1239,6 @@ textarea:focus,
 
 
     <div class="grid">
-
-        <!-- DAILY VERSE -->
 
         <div class="col-8">
 
@@ -1002,8 +1289,6 @@ textarea:focus,
         </div>
 
 
-        <!-- STREAK -->
-
         <div class="col-4">
 
             <div class="card streak-card">
@@ -1029,8 +1314,6 @@ textarea:focus,
 
         </div>
 
-
-        <!-- HEART CHECK-IN -->
 
         <div class="col-12">
 
@@ -1078,8 +1361,6 @@ textarea:focus,
         </div>
 
 
-        <!-- DAILY CHALLENGE -->
-
         <div class="col-6">
 
             <div class="card">
@@ -1107,8 +1388,6 @@ textarea:focus,
 
         </div>
 
-
-        <!-- GROWTH -->
 
         <div class="col-6">
 
@@ -1138,8 +1417,6 @@ textarea:focus,
 
         </div>
 
-
-        <!-- QUICK ACTIONS -->
 
         <div class="col-12">
 
@@ -1633,95 +1910,195 @@ textarea:focus,
 
 
 <!-- =======================================================
-     SHARED PAGE
+     OUR SPACE
 ======================================================= -->
 
 <section id="shared" class="page">
 
-    <div class="section-header">
+    <div id="ourSpaceHub" class="our-space-view">
 
-        <div class="eyebrow">Grow together</div>
+        <div class="section-header">
 
-        <h1>👭 Our space</h1>
+            <div class="eyebrow">Grow together</div>
 
-        <p>
-            A shared place for you and your friend to encourage
-            each other and talk about what you're learning.
-        </p>
+            <h1>👥 Our Space</h1>
 
-    </div>
+            <p>
+                A private place to grow, talk, pray and encourage one another.
+                Add friends, then choose exactly who you want to talk with.
+            </p>
 
-
-    <div class="grid">
-
-        <div class="col-6">
-
-            <div class="card shared-box">
-
-                <div class="shared-icon">💬</div>
-
-                <h2>Shared thoughts</h2>
-
-                <p>
-                    Talk about today's verse, something you
-                    learned, or something you're thinking about.
-                </p>
-
-                <textarea
-                    id="sharedInput"
-                    placeholder="Share something with your friend..."
-                    style="margin-top:17px;"
-                ></textarea>
-
-                <button
-                    class="btn btn-primary"
-                    style="margin-top:12px;"
-                    onclick="saveShared()">
-                    Save thought
-                </button>
-
+            <div class="space-status">
+                ✦ Account connection comes next
             </div>
 
         </div>
 
+        <div class="grid">
 
-        <div class="col-6">
+            <div class="col-6">
 
-            <div class="card">
+                <div class="card">
 
-                <div class="card-title">
-                    🤝 This week's challenge
+                    <div class="card-title">👤 Your profile</div>
+
+                    <h2>Choose your username</h2>
+
+                    <p>
+                        This is the name your friends will see in Our Space.
+                        Usernames can use letters, numbers and underscores.
+                    </p>
+
+                    <div class="space-stack">
+
+                        <div class="profile-preview">
+                            <div class="profile-avatar" id="profileAvatar">YOU</div>
+                            <div>
+                                <div class="profile-name" id="profileName">Your username</div>
+                                <div class="profile-sub">Your Growing to be More Like Jesus profile</div>
+                            </div>
+                        </div>
+
+                        <input
+                            class="input"
+                            id="usernameInput"
+                            type="text"
+                            maxlength="20"
+                            autocomplete="off"
+                            placeholder="Choose a username..."
+                        >
+
+                        <button class="btn btn-primary" onclick="previewUsername()">
+                            Save username preview
+                        </button>
+
+                    </div>
+
+                    <div class="space-note">
+                        For now this preview is saved only on this device. In the next step,
+                        we'll connect it to your Supabase account so it saves properly.
+                    </div>
+
                 </div>
 
-                <h2>Encourage someone.</h2>
+            </div>
 
-                <p>
-                    Send someone a kind message, pray for them,
-                    or simply let them know you're grateful for them.
-                </p>
+            <div class="col-6">
 
-                <button
-                    class="btn btn-green"
-                    style="margin-top:18px;"
-                    onclick="completeChallenge()">
-                    Challenge completed ✓
-                </button>
+                <div class="card">
+
+                    <div class="card-title">🤝 Add a friend</div>
+
+                    <h2>Build your circle</h2>
+
+                    <p>
+                        Once accounts are connected, you'll be able to find people by username,
+                        send a request and keep a separate private conversation with each friend.
+                    </p>
+
+                    <div class="friend-row" style="margin-top:18px;">
+                        <input
+                            class="input"
+                            id="friendUsernameInput"
+                            type="text"
+                            maxlength="20"
+                            autocomplete="off"
+                            placeholder="Friend's username..."
+                        >
+
+                        <button class="btn btn-green" onclick="previewFriendRequest()">
+                            Add friend
+                        </button>
+                    </div>
+
+                    <div id="friendPreview" class="space-stack"></div>
+
+                    <div class="space-note">
+                        Real friend requests will be private and tied to signed-in accounts.
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+        <div class="card" style="margin-top:18px;">
 
+            <div class="card-title">💬 Your chats</div>
 
-    <div class="card" style="margin-top:18px;">
+            <h2>Choose a friend</h2>
 
-        <div class="card-title">
-            Shared thoughts
+            <p>
+                Each friend gets their own private chat. Tap a name to open that conversation.
+            </p>
+
+            <div class="friends-panel" id="friendsList"></div>
+
+            <div class="space-note">
+                Your chat list starts empty. A name only appears here after you add that username.
+                When Supabase is connected, this list will come from your real accepted friends.
+            </div>
+
         </div>
 
-        <div class="entries" id="sharedEntries">
-            <p>No shared thoughts yet.</p>
+        <div class="card" style="margin-top:18px;">
+
+            <div class="card-title">🤝 This week's challenge</div>
+
+            <h2>Encourage someone.</h2>
+
+            <p>
+                Send someone a kind message, pray for them,
+                or simply let them know you're grateful for them.
+            </p>
+
+            <button
+                class="btn btn-green"
+                style="margin-top:18px;"
+                onclick="completeChallenge()">
+                Challenge completed ✓
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="ourSpaceChat" class="our-space-view hidden">
+
+        <div class="chat-page-header">
+            <button class="chat-back" onclick="closeFriendChat()" aria-label="Back to friends">←</button>
+            <div class="chat-avatar" id="activeChatAvatar">👤</div>
+            <div class="chat-page-title">
+                <h2 id="activeChatName">Friend</h2>
+                <p>Private conversation • preview mode</p>
+            </div>
+        </div>
+
+        <div class="card chat-shell">
+
+            <div class="chat-top">
+                <div>
+                    <div class="chat-name" id="activeChatHeader">Private chat</div>
+                    <div class="chat-presence">Only you and this friend will see this conversation</div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages"></div>
+
+            <div class="chat-compose">
+                <textarea id="chatInput" placeholder="Write a message..."></textarea>
+
+                <button class="btn btn-primary" onclick="previewMessage()">
+                    Send ↑
+                </button>
+            </div>
+
+            <div class="space-note">
+                Preview mode: each friend's messages are kept separately on this device.
+                When Supabase is connected, these will become real private cross-device chats.
+            </div>
+
         </div>
 
     </div>
@@ -2906,87 +3283,470 @@ function newPrayerPrompt() {
 
 
 /* =========================================================
-   SHARED THOUGHTS
+   OUR SPACE — LOCAL UI PREVIEW
+   Multiple friends + separate private chat views.
+   Supabase connection is added in the next step.
 ========================================================= */
 
-function saveShared() {
+let activePreviewFriend = null;
+
+function getPreviewFriends() {
+    return getData("ourSpacePreviewFriends", []);
+}
+
+function savePreviewFriends(friends) {
+    setData("ourSpacePreviewFriends", friends);
+}
+
+function getPreviewUsername() {
+    return localStorage.getItem("ourSpacePreviewUsername") || "";
+}
+
+function previewUsername() {
+    const input = document.getElementById("usernameInput");
+    const username = input.value.trim();
+
+    if (!username) {
+        showToast("Choose a username first 🤍");
+        return;
+    }
+
+    if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
+        showToast("Use 3–20 letters, numbers or _");
+        return;
+    }
+
+    localStorage.setItem("ourSpacePreviewUsername", username);
+    renderOurSpacePreview();
+    showToast("Username preview saved ✓");
+}
+
+function previewFriendRequest() {
+    const input = document.getElementById("friendUsernameInput");
+    const username = input.value.trim();
+
+    if (!username) {
+        showToast("Enter your friend's username first");
+        return;
+    }
+
+    if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
+        showToast("Use 3–20 letters, numbers or _");
+        return;
+    }
+
+    const ownUsername = getPreviewUsername();
+
+    if (
+        ownUsername &&
+        username.toLowerCase() === ownUsername.toLowerCase()
+    ) {
+        showToast("You can't add your own username");
+        return;
+    }
+
+    const friends = getPreviewFriends();
+
+    const alreadyAdded = friends.some(
+        friend =>
+            friend.username.toLowerCase() ===
+            username.toLowerCase()
+    );
+
+    if (alreadyAdded) {
+        showToast("That friend is already in your chats 🤍");
+        return;
+    }
+
+    friends.push({
+        username,
+        preview: "Tap to open your private chat"
+    });
+
+    savePreviewFriends(friends);
+
+    input.value = "";
+
+    const container =
+        document.getElementById("friendPreview");
+
+    container.innerHTML = `
+        <div class="profile-preview">
+            <div class="profile-avatar">
+                ${escapeHTML(username.slice(0,2).toUpperCase())}
+            </div>
+
+            <div style="flex:1;">
+                <div class="profile-name">
+                    ${escapeHTML(username)}
+                </div>
+
+                <div class="profile-sub">
+                    Added to your preview chat list
+                </div>
+            </div>
+
+            <span
+                style="
+                    color:var(--green-light);
+                    font-size:12px;
+                    font-weight:800;
+                "
+            >
+                ADDED
+            </span>
+        </div>
+    `;
+
+    renderFriendsList();
+
+    showToast(`${username} added to your chats 🤝`);
+}
+
+function renderFriendsList() {
+
+    const container =
+        document.getElementById("friendsList");
+
+    if (!container) return;
+
+    const friends =
+        getPreviewFriends();
+
+    if (!friends.length) {
+
+        container.innerHTML = `
+            <div class="chat-empty">
+
+                <span class="emoji">
+                    👥
+                </span>
+
+                No friends added yet.<br>
+
+                Add someone by username and
+                they will appear here.
+
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        friends.map(friend => `
+
+            <button
+                class="friend-card"
+                onclick="
+                    openFriendChat(
+                        '${friend.username.replace(/'/g, "\\'")}'
+                    )
+                "
+            >
+
+                <div class="friend-card-avatar">
+                    ${escapeHTML(
+                        friend.username
+                            .slice(0,2)
+                            .toUpperCase()
+                    )}
+                </div>
+
+                <div class="friend-card-copy">
+
+                    <div class="friend-card-name">
+                        ${escapeHTML(friend.username)}
+                    </div>
+
+                    <div class="friend-card-preview">
+                        ${escapeHTML(
+                            friend.preview ||
+                            "Tap to open your private chat"
+                        )}
+                    </div>
+
+                </div>
+
+                <div class="friend-card-arrow">
+                    ›
+                </div>
+
+            </button>
+
+        `).join("");
+}
+
+function openFriendChat(username) {
+
+    activePreviewFriend =
+        username;
+
+    document
+        .getElementById("ourSpaceHub")
+        .classList
+        .add("hidden");
+
+    document
+        .getElementById("ourSpaceChat")
+        .classList
+        .remove("hidden");
+
+    document
+        .getElementById("activeChatName")
+        .textContent =
+        username;
+
+    document
+        .getElementById("activeChatHeader")
+        .textContent =
+        `Chat with ${username}`;
+
+    document
+        .getElementById("activeChatAvatar")
+        .textContent =
+        username
+            .slice(0,2)
+            .toUpperCase();
+
+    renderPreviewMessages();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+function closeFriendChat() {
+
+    document
+        .getElementById("ourSpaceChat")
+        .classList
+        .add("hidden");
+
+    document
+        .getElementById("ourSpaceHub")
+        .classList
+        .remove("hidden");
+
+    activePreviewFriend =
+        null;
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+function getFriendMessageKey(username) {
+
+    return (
+        "ourSpacePreviewMessages_" +
+        username.toLowerCase()
+    );
+}
+
+function previewMessage() {
+
+    if (!activePreviewFriend) {
+
+        showToast(
+            "Choose a friend first 🤍"
+        );
+
+        return;
+    }
 
     const input =
-        document.getElementById("sharedInput");
+        document.getElementById(
+            "chatInput"
+        );
 
     const text =
         input.value.trim();
 
     if (!text) {
 
-        showToast("Write something first 🤍");
+        showToast(
+            "Write a message first 🤍"
+        );
 
         return;
-
     }
 
-    let entries =
-        getData("sharedEntries", []);
+    const key =
+        getFriendMessageKey(
+            activePreviewFriend
+        );
 
-    entries.unshift({
+    let messages =
+        getData(key, []);
 
-        date: new Date().toLocaleDateString(
-            undefined,
-            {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            }
-        ),
+    messages.push({
 
-        text
+        text,
+
+        time:
+            new Date()
+                .toLocaleTimeString(
+                    [],
+                    {
+                        hour: "numeric",
+                        minute: "2-digit"
+                    }
+                )
 
     });
 
-    setData("sharedEntries", entries);
+    setData(
+        key,
+        messages
+    );
 
     input.value = "";
 
-    renderShared();
+    renderPreviewMessages();
 
-    showToast("Thought saved 💬");
-
+    showToast(
+        `Preview message added to ${activePreviewFriend} 💬`
+    );
 }
 
-
-function renderShared() {
+function renderPreviewMessages() {
 
     const container =
-        document.getElementById("sharedEntries");
+        document.getElementById(
+            "chatMessages"
+        );
 
-    const entries =
-        getData("sharedEntries", []);
+    if (!container) return;
 
-    if (!entries.length) {
+    if (!activePreviewFriend) {
 
-        container.innerHTML =
-            "<p>No shared thoughts yet.</p>";
+        container.innerHTML = `
+
+            <div class="chat-empty">
+
+                <span class="emoji">
+                    👥
+                </span>
+
+                Choose a friend to open
+                a private conversation.
+
+            </div>
+
+        `;
 
         return;
+    }
 
+    const messages =
+        getData(
+            getFriendMessageKey(
+                activePreviewFriend
+            ),
+            []
+        );
+
+    if (!messages.length) {
+
+        container.innerHTML = `
+
+            <div class="chat-empty">
+
+                <span class="emoji">
+                    💬
+                </span>
+
+                No messages with
+                ${escapeHTML(activePreviewFriend)}
+                yet.<br>
+
+                Start the conversation below.
+
+            </div>
+
+        `;
+
+        return;
     }
 
     container.innerHTML =
-        entries.map(entry => `
+        messages.map(message => `
 
-            <div class="entry">
+            <div class="message mine">
 
-                <div class="entry-date">
-                    ${entry.date}
-                </div>
+                ${escapeHTML(message.text)}
 
-                <div class="entry-text">
-                    ${escapeHTML(entry.text)}
-                </div>
+                <span class="message-time">
+                    ${escapeHTML(message.time)}
+                </span>
 
             </div>
 
         `).join("");
+
+    container.scrollTop =
+        container.scrollHeight;
+}
+
+function renderOurSpacePreview() {
+
+    const username =
+        getPreviewUsername();
+
+    const input =
+        document.getElementById(
+            "usernameInput"
+        );
+
+    const name =
+        document.getElementById(
+            "profileName"
+        );
+
+    const avatar =
+        document.getElementById(
+            "profileAvatar"
+        );
+
+    if (
+        input &&
+        username
+    ) {
+        input.value =
+            username;
+    }
+
+    if (name) {
+
+        name.textContent =
+            username ||
+            "Your username";
+    }
+
+    if (avatar) {
+
+        avatar.textContent =
+            username
+                ? username
+                    .slice(0,2)
+                    .toUpperCase()
+                : "YOU";
+    }
+
+    renderFriendsList();
+
+    renderPreviewMessages();
+}
+
+
+/* Backwards-compatible name used by the original app start-up. */
+
+function renderShared() {
+
+    renderOurSpacePreview();
 
 }
 
@@ -3030,15 +3790,20 @@ function closeModal() {
 
 document
     .getElementById("modal")
-    .addEventListener("click", function(event) {
+    .addEventListener(
+        "click",
+        function(event) {
 
-        if (event.target === this) {
+            if (
+                event.target === this
+            ) {
 
-            closeModal();
+                closeModal();
+
+            }
 
         }
-
-    });
+    );
 
 
 /* =========================================================
@@ -3048,15 +3813,22 @@ document
 function showToast(message) {
 
     const toast =
-        document.getElementById("toast");
+        document.getElementById(
+            "toast"
+        );
 
-    toast.textContent = message;
+    toast.textContent =
+        message;
 
-    toast.classList.add("show");
+    toast.classList.add(
+        "show"
+    );
 
     setTimeout(() => {
 
-        toast.classList.remove("show");
+        toast.classList.remove(
+            "show"
+        );
 
     }, 2200);
 
@@ -3088,7 +3860,10 @@ function displayDate() {
     const today =
         new Date();
 
-    document.getElementById("todayDate")
+    document
+        .getElementById(
+            "todayDate"
+        )
         .textContent =
         today.toLocaleDateString(
             undefined,
@@ -3126,20 +3901,28 @@ function initializeApp() {
     renderShared();
 
     const savedMood =
-        localStorage.getItem("todayMood");
+        localStorage.getItem(
+            "todayMood"
+        );
 
     if (savedMood) {
 
-        document.querySelectorAll(".mood")
+        document
+            .querySelectorAll(".mood")
             .forEach(button => {
 
                 if (
-                    button.textContent
+                    button
+                        .textContent
                         .toLowerCase()
-                        .includes(savedMood.toLowerCase())
+                        .includes(
+                            savedMood.toLowerCase()
+                        )
                 ) {
 
-                    button.classList.add("selected");
+                    button
+                        .classList
+                        .add("selected");
 
                 }
 
