@@ -1,324 +1,3160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Jesus Bible Study</title>
-    <style>
-        :root {
-            --bg: #000000;
-            --card-bg: #121214;
-            --border: #1f1f23;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.2);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --streak-color: #f59e0b;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17130f">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 16px;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
+<title>Growing to be More Like Jesus</title>
 
-        .container {
-            max-width: 500px;
-            width: 100%;
-        }
+<style>
+/* =========================================================
+   GROWING TO BE MORE LIKE JESUS
+   Complete single-file Bible study app
+   ========================================================= */
 
-        header {
-            text-align: center;
-            margin-bottom: 24px;
-            margin-top: 10px;
-        }
+:root {
+    --bg: #100d0a;
+    --bg-soft: #17130f;
+    --card: #1c1712;
+    --card-light: #241e17;
+    --cream: #f7efe1;
+    --muted: #b9ad9d;
+    --gold: #d9aa5b;
+    --gold-light: #f0ca82;
+    --brown: #8f6740;
+    --green: #7f9b72;
+    --green-light: #b8cda5;
+    --border: rgba(255,255,255,.08);
+    --shadow: 0 20px 50px rgba(0,0,0,.25);
+    --radius: 24px;
+}
 
-        h1 {
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(to right, #60a5fa, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 4px;
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 0;
-        }
+html {
+    scroll-behavior: smooth;
+}
 
-        /* Streak Element */
-        .streak-container {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--streak-color);
-            margin-bottom: 20px;
-        }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:
+        radial-gradient(circle at 80% 0%, rgba(217,170,91,.08), transparent 28%),
+        radial-gradient(circle at 0% 30%, rgba(127,155,114,.06), transparent 25%),
+        var(--bg);
+    color: var(--cream);
+    min-height: 100vh;
+    padding-bottom: 95px;
+}
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 18px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
 
-        .card:active {
-            transform: scale(0.99);
-            border-color: var(--accent);
-        }
+button {
+    cursor: pointer;
+}
 
-        .verse-tag {
-            display: inline-block;
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 14px;
-        }
+button:active {
+    transform: scale(.98);
+}
 
-        .verse-text {
-            font-size: 18px;
-            line-height: 1.6;
-            font-style: italic;
-            color: #f9fafb;
-            margin-bottom: 12px;
-        }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
-        .verse-ref {
-            font-weight: 700;
-            color: #60a5fa;
-            text-align: right;
-            font-size: 14px;
-        }
+/* =========================================================
+   APP HEADER
+   ========================================================= */
 
-        .prompt-box {
-            background: #18181b;
-            border-left: 3px solid var(--accent);
-            padding: 14px;
-            margin-top: 20px;
-            border-radius: 0 12px 12px 0;
-        }
+.topbar {
+    width: 100%;
+    max-width: 1180px;
+    margin: auto;
+    padding: 22px 20px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-        .prompt-title {
-            font-weight: bold;
-            font-size: 13px;
-            color: #60a5fa;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    letter-spacing: -.4px;
+}
 
-        .prompt-text {
-            font-size: 14px;
-            color: var(--text-main);
-            line-height: 1.5;
-        }
+.logo-cross {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #d9aa5b, #8f6740);
+    color: #17110b;
+    font-size: 20px;
+    box-shadow: 0 8px 25px rgba(217,170,91,.16);
+}
 
-        /* Interactive Mood Checker */
-        .mood-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
+.top-actions {
+    display: flex;
+    gap: 8px;
+}
 
-        .mood-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
+.icon-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--cream);
+}
 
-        .mood-btn {
-            background: #18181b;
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 8px 4px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s ease;
-        }
+/* =========================================================
+   MAIN
+   ========================================================= */
 
-        .mood-btn span {
-            font-size: 18px;
-        }
+main {
+    max-width: 1180px;
+    margin: auto;
+    padding: 10px 20px 50px;
+}
 
-        .mood-btn.selected {
-            background: var(--accent-glow);
-            border-color: var(--accent);
-            color: #60a5fa;
-        }
+.page {
+    display: none;
+    animation: pageIn .35s ease;
+}
 
-        h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 6px;
-            color: #f9fafb;
-        }
+.page.active {
+    display: block;
+}
 
-        textarea {
-            width: 100%;
-            height: 110px;
-            padding: 14px;
-            background: #18181b;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-main);
-            resize: none;
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 14px;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
-        }
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-            background: #1c1c21;
-        }
+/* =========================================================
+   HERO
+   ========================================================= */
 
-        .action-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-size: 14px;
-            transition: background 0.2s ease;
-            box-shadow: 0 4px 12px var(--accent-glow);
-        }
+.hero {
+    padding: 55px 0 30px;
+    text-align: center;
+}
 
-        .action-btn:hidden {
-            display: none;
-        }
+.eyebrow {
+    color: var(--gold-light);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
 
-        .action-btn:active {
-            background: #2563eb;
-        }
+.hero h1 {
+    font-family: Georgia, serif;
+    font-size: clamp(38px, 7vw, 72px);
+    line-height: .98;
+    letter-spacing: -2.5px;
+    max-width: 800px;
+    margin: auto;
+}
 
-        .saved-notes {
-            margin-top: 14px;
-            font-size: 14px;
-            color: #e5e7eb;
-            white-space: pre-wrap;
-            background: #18181b;
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 12px;
-            display: none;
-        }
+.hero h1 span {
+    color: var(--gold-light);
+}
 
-        .tracker-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            text-align: center;
-            margin-top: 12px;
-        }
+.hero p {
+    color: var(--muted);
+    margin: 20px auto 0;
+    max-width: 570px;
+    font-size: 17px;
+    line-height: 1.7;
+}
 
-        .day-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
+.date-line {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 14px;
+}
 
-        .checkbox-container {
-            background: #18181b;
-            border: 1px solid var(--border);
-            padding: 10px 0;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.2s ease;
-        }
+/* =========================================================
+   GRID
+   ========================================================= */
 
-        .checkbox-container.active {
-            background: var(--accent-glow);
-            border-color: var(--accent);
-        }
-    </style>
+.grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 18px;
+}
+
+.col-4 {
+    grid-column: span 4;
+}
+
+.col-6 {
+    grid-column: span 6;
+}
+
+.col-8 {
+    grid-column: span 8;
+}
+
+.col-12 {
+    grid-column: span 12;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card {
+    background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    right: -60px;
+    top: -60px;
+    border-radius: 50%;
+    background: rgba(217,170,91,.035);
+    pointer-events: none;
+}
+
+.card-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 14px;
+}
+
+.card h2 {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.card h3 {
+    font-size: 19px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+/* =========================================================
+   DAILY VERSE
+   ========================================================= */
+
+.verse-card {
+    background:
+        linear-gradient(135deg, rgba(217,170,91,.14), transparent 55%),
+        linear-gradient(145deg, #211a13, #17130f);
+    border-color: rgba(217,170,91,.18);
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.verse-mark {
+    font-family: Georgia, serif;
+    font-size: 70px;
+    color: rgba(240,202,130,.35);
+    line-height: .5;
+}
+
+.verse-text {
+    font-family: Georgia, serif;
+    font-size: clamp(24px, 4vw, 38px);
+    line-height: 1.35;
+    margin: 20px 0;
+}
+
+.verse-reference {
+    color: var(--gold-light);
+    font-weight: 700;
+}
+
+.verse-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 12px 17px;
+    font-weight: 750;
+    transition: .2s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: #1a130b;
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,.055);
+    border: 1px solid var(--border);
+    color: var(--cream);
+}
+
+.btn-green {
+    background: rgba(127,155,114,.15);
+    border: 1px solid rgba(127,155,114,.25);
+    color: var(--green-light);
+}
+
+/* =========================================================
+   STREAK
+   ========================================================= */
+
+.streak-card {
+    text-align: center;
+}
+
+.streak-number {
+    font-size: 52px;
+    font-weight: 850;
+    color: var(--gold-light);
+    margin: 8px 0;
+}
+
+.streak-fire {
+    font-size: 28px;
+}
+
+/* =========================================================
+   MOOD
+   ========================================================= */
+
+.moods {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 9px;
+    margin-top: 18px;
+}
+
+.mood {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.025);
+    border-radius: 16px;
+    padding: 15px 8px;
+    color: var(--cream);
+    transition: .2s;
+}
+
+.mood:hover {
+    border-color: rgba(217,170,91,.4);
+}
+
+.mood.selected {
+    background: rgba(217,170,91,.14);
+    border-color: var(--gold);
+}
+
+.mood-icon {
+    font-size: 25px;
+    display: block;
+    margin-bottom: 7px;
+}
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.quick-action {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 18px;
+    padding: 18px 10px;
+    color: var(--cream);
+    text-align: center;
+    transition: .2s;
+}
+
+.quick-action:hover {
+    transform: translateY(-3px);
+    border-color: rgba(217,170,91,.35);
+}
+
+.quick-action .emoji {
+    font-size: 27px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.progress {
+    height: 9px;
+    background: rgba(255,255,255,.07);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 14px 0 7px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--brown), var(--gold-light));
+    border-radius: inherit;
+    transition: width .8s ease;
+}
+
+.progress-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.section-header {
+    padding: 42px 0 24px;
+}
+
+.section-header h1 {
+    font-family: Georgia, serif;
+    font-size: clamp(34px, 6vw, 55px);
+    margin-bottom: 8px;
+}
+
+.section-header p {
+    color: var(--muted);
+    max-width: 650px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   BIBLE
+   ========================================================= */
+
+.search {
+    width: 100%;
+    padding: 15px 17px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.04);
+    color: var(--cream);
+    outline: none;
+}
+
+.search:focus {
+    border-color: rgba(217,170,91,.55);
+}
+
+.passage-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.passage {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 18px;
+    padding: 19px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.passage:hover {
+    border-color: rgba(217,170,91,.4);
+    transform: translateY(-2px);
+}
+
+.passage-reference {
+    color: var(--gold-light);
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.passage-text {
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+/* =========================================================
+   GROW TOPICS
+   ========================================================= */
+
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 15px;
+}
+
+.topic {
+    min-height: 180px;
+    border: 1px solid var(--border);
+    background: linear-gradient(145deg, #211b15, #17130f);
+    border-radius: 22px;
+    padding: 22px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.topic:hover {
+    transform: translateY(-4px);
+    border-color: rgba(217,170,91,.35);
+}
+
+.topic-icon {
+    font-size: 31px;
+    margin-bottom: 14px;
+}
+
+.topic h3 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+}
+
+.topic p {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+textarea,
+.input {
+    width: 100%;
+    background: rgba(255,255,255,.035);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    color: var(--cream);
+    padding: 16px;
+    outline: none;
+    resize: vertical;
+}
+
+textarea {
+    min-height: 160px;
+}
+
+textarea:focus,
+.input:focus {
+    border-color: rgba(217,170,91,.55);
+}
+
+.form-stack {
+    display: grid;
+    gap: 13px;
+}
+
+.label {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* =========================================================
+   PRAYER
+   ========================================================= */
+
+.prayer-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.category {
+    padding: 10px 13px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.category.selected {
+    background: rgba(127,155,114,.15);
+    color: var(--green-light);
+    border-color: rgba(127,155,114,.4);
+}
+
+/* =========================================================
+   JOURNAL ENTRIES
+   ========================================================= */
+
+.entries {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.entry {
+    background: rgba(255,255,255,.035);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 17px;
+}
+
+.entry-date {
+    color: var(--gold-light);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.entry-text {
+    color: var(--muted);
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 18px;
+}
+
+.video-card {
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+}
+
+.video-placeholder {
+    aspect-ratio: 16/9;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle, rgba(217,170,91,.13), transparent 50%),
+        #15110d;
+    font-size: 48px;
+}
+
+.video-info {
+    padding: 18px;
+}
+
+.video-info p {
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+/* =========================================================
+   SHARED
+   ========================================================= */
+
+.shared-box {
+    text-align: center;
+    padding: 30px;
+}
+
+.shared-icon {
+    font-size: 45px;
+    margin-bottom: 12px;
+}
+
+/* =========================================================
+   BOTTOM NAV
+   ========================================================= */
+
+.bottom-nav {
+    position: fixed;
+    z-index: 100;
+    left: 50%;
+    bottom: 13px;
+    transform: translateX(-50%);
+    width: min(680px, calc(100% - 20px));
+    background: rgba(28,23,18,.93);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 24px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    box-shadow: 0 18px 50px rgba(0,0,0,.45);
+}
+
+.nav-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 9px 4px;
+    border-radius: 17px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.nav-btn span {
+    display: block;
+    font-size: 21px;
+    margin-bottom: 3px;
+}
+
+.nav-btn.active {
+    background: rgba(217,170,91,.12);
+    color: var(--gold-light);
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+    position: fixed;
+    z-index: 200;
+    left: 50%;
+    bottom: 100px;
+    transform: translate(-50%, 20px);
+    background: #f7efe1;
+    color: #1a130d;
+    padding: 12px 17px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: .3s;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    backdrop-filter: blur(8px);
+    z-index: 150;
+    display: none;
+    place-items: center;
+    padding: 20px;
+}
+
+.modal.open {
+    display: grid;
+}
+
+.modal-card {
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: auto;
+    background: #1b1611;
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    padding: 27px;
+}
+
+.modal-close {
+    float: right;
+    border: none;
+    background: rgba(255,255,255,.06);
+    color: var(--cream);
+    border-radius: 12px;
+    width: 38px;
+    height: 38px;
+}
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 850px) {
+    body {
+        padding-bottom: 35px;
+    }
+
+    .bottom-nav {
+        position: sticky;
+        top: 10px;
+        bottom: auto;
+        transform: none;
+        margin: 0 auto 20px;
+        width: min(680px, calc(100% - 40px));
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    main {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .topbar {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .logo-text {
+        font-size: 14px;
+    }
+
+    .hero {
+        padding-top: 35px;
+    }
+
+    .grid {
+        display: block;
+    }
+
+    .card {
+        margin-bottom: 15px;
+        padding: 21px;
+    }
+
+    .moods {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .quick-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .topic-grid,
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .verse-card {
+        min-height: 390px;
+    }
+
+    .verse-text {
+        font-size: 27px;
+    }
+
+    .bottom-nav {
+        bottom: 9px;
+    }
+
+    .nav-btn span {
+        font-size: 19px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <header>
-        <h1>Our Daily Study</h1>
-        <p class="subtitle">Getting to know Jesus, one day at a time.</p>
-        <div class="streak-container">
-            🔥 Reading Streak: <span id="streakCount" style="margin-left: 4px;">0</span> Days
+<!-- =======================================================
+     HEADER
+======================================================= -->
+
+<header class="topbar">
+
+    <div class="logo">
+        <div class="logo-cross">✝</div>
+        <div class="logo-text">Growing to be More Like Jesus</div>
+    </div>
+
+    <div class="top-actions">
+        <button class="icon-button" onclick="showPage('shared')" aria-label="Shared space">
+            👭
+        </button>
+    </div>
+
+</header>
+
+
+<main>
+
+<!-- =======================================================
+     HOME
+======================================================= -->
+
+<section id="home" class="page active">
+
+    <div class="hero">
+
+        <div class="eyebrow">Our Daily Walk</div>
+
+        <h1>
+            Growing to be<br>
+            more like <span>Jesus.</span>
+        </h1>
+
+        <p>
+            Getting to know Jesus, one day at a time.
+            A little place for us to read, pray, reflect,
+            and grow together.
+        </p>
+
+        <div class="date-line" id="todayDate"></div>
+
+    </div>
+
+
+    <div class="grid">
+
+        <!-- DAILY VERSE -->
+
+        <div class="col-8">
+
+            <div class="card verse-card">
+
+                <div>
+
+                    <div class="card-title">
+                        ✦ Today's verse
+                    </div>
+
+                    <div class="verse-mark">“</div>
+
+                    <div class="verse-text" id="dailyVerseText">
+                        Loading...
+                    </div>
+
+                    <div class="verse-reference" id="dailyVerseReference">
+                        —
+                    </div>
+
+                </div>
+
+                <div class="verse-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="completeToday()">
+                        ✓ Mark today's study
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="saveDailyVerse()">
+                        ♡ Save verse
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="shareVerse()">
+                        ↗ Share
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
-    </header>
 
-    <!-- Bible Verse Card -->
-    <div class="card">
-        <div class="verse-tag">Today's Focus</div>
-        <div class="verse-text" id="verseText">Loading daily verse...</div>
-        <div class="verse-ref" id="verseRef">...</div>
-        
-        <div class="prompt-box">
-            <div class="prompt-title">Reflection Prompt</div>
-            <div class="prompt-text" id="promptText">...</div>
+
+        <!-- STREAK -->
+
+        <div class="col-4">
+
+            <div class="card streak-card">
+
+                <div class="card-title">
+                    Your journey
+                </div>
+
+                <div class="streak-fire">🔥</div>
+
+                <div class="streak-number" id="streakNumber">
+                    0
+                </div>
+
+                <h3>day reading streak</h3>
+
+                <p>
+                    Keep showing up. Growth happens
+                    one day at a time.
+                </p>
+
+            </div>
+
         </div>
-    </div>
 
-    <!-- Interactive Check-In -->
-    <div class="card">
-        <div class="mood-title">How is your heart before studying today?</div>
-        <div class="mood-grid">
-            <button class="mood-btn" onclick="selectMood(this, '🙏 Grateful')"><span>🙏</span>Grateful</button>
-            <button class="mood-btn" onclick="selectMood(this, '⛰️ Struggling')"><span>⛰️</span>Heavy</button>
-            <button class="mood-btn" onclick="selectMood(this, '⚡ Inspired')"><span>⚡</span>Inspired</button>
-            <button class="mood-btn" onclick="selectMood(this, '⏳ Tired')"><span>⏳</span>Tired</button>
+
+        <!-- HEART CHECK-IN -->
+
+        <div class="col-12">
+
+            <div class="card">
+
+                <div class="card-title">
+                    Before we study
+                </div>
+
+                <h2>How is your heart today?</h2>
+
+                <p>
+                    There is no wrong answer. Bring your heart
+                    exactly as it is.
+                </p>
+
+                <div class="moods">
+
+                    <button class="mood" onclick="selectMood(this,'Grateful')">
+                        <span class="mood-icon">🙏</span>
+                        Grateful
+                    </button>
+
+                    <button class="mood" onclick="selectMood(this,'Heavy')">
+                        <span class="mood-icon">🏔️</span>
+                        Heavy
+                    </button>
+
+                    <button class="mood" onclick="selectMood(this,'Inspired')">
+                        <span class="mood-icon">⚡</span>
+                        Inspired
+                    </button>
+
+                    <button class="mood" onclick="selectMood(this,'Tired')">
+                        <span class="mood-icon">⌛</span>
+                        Tired
+                    </button>
+
+                </div>
+
+                <p id="moodMessage" style="margin-top:15px;"></p>
+
+            </div>
+
         </div>
+
+
+        <!-- DAILY CHALLENGE -->
+
+        <div class="col-6">
+
+            <div class="card">
+
+                <div class="card-title">
+                    🎯 Today's challenge
+                </div>
+
+                <h2 id="challengeTitle">
+                    Loading...
+                </h2>
+
+                <p id="challengeText">
+                    Loading today's challenge...
+                </p>
+
+                <button
+                    class="btn btn-green"
+                    style="margin-top:18px;"
+                    onclick="completeChallenge()">
+                    I did it ✓
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- GROWTH -->
+
+        <div class="col-6">
+
+            <div class="card">
+
+                <div class="card-title">
+                    🌱 Growing
+                </div>
+
+                <h2>Faith journey</h2>
+
+                <p>
+                    Every time you study, pray or reflect,
+                    you're building a habit of walking with Jesus.
+                </p>
+
+                <div class="progress">
+                    <div class="progress-fill" id="homeProgress"></div>
+                </div>
+
+                <div class="progress-row">
+                    <span id="growthText">0 completed</span>
+                    <span>Keep growing 🌱</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="col-12">
+
+            <div class="card">
+
+                <div class="card-title">
+                    What do you want to do?
+                </div>
+
+                <div class="quick-grid">
+
+                    <button class="quick-action" onclick="showPage('bible')">
+                        <span class="emoji">📖</span>
+                        Read Bible
+                    </button>
+
+                    <button class="quick-action" onclick="showPage('prayer')">
+                        <span class="emoji">🙏</span>
+                        Pray
+                    </button>
+
+                    <button class="quick-action" onclick="showPage('journal')">
+                        <span class="emoji">📝</span>
+                        Journal
+                    </button>
+
+                    <button class="quick-action" onclick="showPage('grow')">
+                        <span class="emoji">🌱</span>
+                        Grow
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- Chat & Journaling -->
-    <div class="card">
-        <h3>Shared Thoughts & Prayers</h3>
-        <textarea id="discussionInput" placeholder="What stood out to you? Share a prayer request..."></textarea>
-        <button class="action-btn" onclick="saveNotes()">Save & Share Thoughts</button>
-        <div id="savedNotesDisplay" class="saved-notes"></div>
+</section>
+
+
+<!-- =======================================================
+     BIBLE PAGE
+======================================================= -->
+
+<section id="bible" class="page">
+
+    <div class="section-header">
+
+        <div class="eyebrow">The Word</div>
+
+        <h1>📖 Bible</h1>
+
+        <p>
+            Slow down. Read carefully. Ask what the passage
+            teaches you about God, Jesus, and the way we are
+            called to live.
+        </p>
+
     </div>
 
-    <!-- Weekly Checklist -->
+
     <div class="card">
-        <h3>Weekly Progress</h3>
-        <div class="tracker-grid" id="trackerGrid"></div>
+
+        <div class="card-title">
+            Search passages
+        </div>
+
+        <input
+            class="search"
+            id="bibleSearch"
+            type="search"
+            placeholder="Search for a verse, book or word..."
+            oninput="searchBible()"
+        >
+
+        <div class="passage-list" id="passageList"></div>
+
     </div>
+
+</section>
+
+
+<!-- =======================================================
+     GROW PAGE
+======================================================= -->
+
+<section id="grow" class="page">
+
+    <div class="section-header">
+
+        <div class="eyebrow">Become more like Him</div>
+
+        <h1>🌱 Grow</h1>
+
+        <p>
+            Following Jesus isn't about becoming perfect.
+            It's about continually learning who He is and
+            allowing His love to shape the way we live.
+        </p>
+
+    </div>
+
+
+    <div class="topic-grid">
+
+        <div class="topic" onclick="openTopic('Knowing Jesus')">
+            <div class="topic-icon">✝️</div>
+            <h3>Knowing Jesus</h3>
+            <p>Discover His character, His words, and His heart.</p>
+        </div>
+
+        <div class="topic" onclick="openTopic('Trusting God')">
+            <div class="topic-icon">🌊</div>
+            <h3>Trusting God</h3>
+            <p>Learning to trust Him even when we don't know what comes next.</p>
+        </div>
+
+        <div class="topic" onclick="openTopic('Loving Others')">
+            <div class="topic-icon">❤️</div>
+            <h3>Loving Others</h3>
+            <p>Learning to love people with patience, kindness and grace.</p>
+        </div>
+
+        <div class="topic" onclick="openTopic('Forgiveness')">
+            <div class="topic-icon">🕊️</div>
+            <h3>Forgiveness</h3>
+            <p>Understanding forgiveness and extending grace.</p>
+        </div>
+
+        <div class="topic" onclick="openTopic('Prayer')">
+            <div class="topic-icon">🙏</div>
+            <h3>Prayer</h3>
+            <p>Growing in a real and honest relationship with God.</p>
+        </div>
+
+        <div class="topic" onclick="openTopic('Serving')">
+            <div class="topic-icon">🤲</div>
+            <h3>Serving</h3>
+            <p>Looking for ways to reflect Jesus through our actions.</p>
+        </div>
+
+    </div>
+
+
+    <div class="card" style="margin-top:18px;">
+
+        <div class="card-title">
+            Weekly reflection
+        </div>
+
+        <h2>What does becoming more like Jesus look like for me?</h2>
+
+        <p>
+            Don't worry about having the perfect answer.
+            Think honestly about one small area where you want
+            Jesus to shape your heart this week.
+        </p>
+
+        <button
+            class="btn btn-primary"
+            style="margin-top:18px;"
+            onclick="showPage('journal')">
+            Write my reflection →
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     PRAYER PAGE
+======================================================= -->
+
+<section id="prayer" class="page">
+
+    <div class="section-header">
+
+        <div class="eyebrow">Talk with God</div>
+
+        <h1>🙏 Prayer</h1>
+
+        <p>
+            Prayer doesn't need complicated words.
+            Talk to God honestly, listen, give thanks,
+            ask for help, and bring Him what's on your heart.
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="col-8">
+
+            <div class="card">
+
+                <div class="card-title">
+                    Prayer journal
+                </div>
+
+                <h2>What would you like to bring to God?</h2>
+
+                <div class="prayer-categories">
+
+                    <button class="category" onclick="selectCategory(this)">
+                        🙏 General
+                    </button>
+
+                    <button class="category" onclick="selectCategory(this)">
+                        ❤️ Gratitude
+                    </button>
+
+                    <button class="category" onclick="selectCategory(this)">
+                        👨‍👩‍👧 Family & friends
+                    </button>
+
+                    <button class="category" onclick="selectCategory(this)">
+                        🧭 Guidance
+                    </button>
+
+                    <button class="category" onclick="selectCategory(this)">
+                        🌱 Growth
+                    </button>
+
+                </div>
+
+                <textarea
+                    id="prayerInput"
+                    placeholder="Write your prayer here..."
+                ></textarea>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:13px;"
+                    onclick="savePrayer()">
+                    Save prayer 🙏
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-4">
+
+            <div class="card">
+
+                <div class="card-title">
+                    Prayer prompt
+                </div>
+
+                <h3 id="prayerPrompt">
+                    What are you thankful for today?
+                </h3>
+
+                <button
+                    class="btn btn-secondary"
+                    style="margin-top:18px;"
+                    onclick="newPrayerPrompt()">
+                    Another prompt
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card" style="margin-top:18px;">
+
+        <div class="card-title">
+            Your saved prayers
+        </div>
+
+        <div class="entries" id="prayerEntries">
+            <p>No prayers saved yet.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     JOURNAL PAGE
+======================================================= -->
+
+<section id="journal" class="page">
+
+    <div class="section-header">
+
+        <div class="eyebrow">Be still & reflect</div>
+
+        <h1>📝 Journal</h1>
+
+        <p>
+            Write honestly. This space is for reflection,
+            questions, gratitude, lessons, and the things
+            you're learning as you walk with Jesus.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Today's reflection
+        </div>
+
+        <h2 id="journalPrompt">
+            What did you learn about Jesus today?
+        </h2>
+
+        <textarea
+            id="journalInput"
+            placeholder="Write whatever is on your heart..."
+            style="margin-top:16px;"
+        ></textarea>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:13px;">
+
+            <button
+                class="btn btn-primary"
+                onclick="saveJournal()">
+                Save reflection
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="newJournalPrompt()">
+                New prompt
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="card" style="margin-top:18px;">
+
+        <div class="card-title">
+            Previous reflections
+        </div>
+
+        <div class="entries" id="journalEntries">
+            <p>No reflections yet.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     WATCH PAGE
+======================================================= -->
+
+<section id="watch" class="page">
+
+    <div class="section-header">
+
+        <div class="eyebrow">Watch & learn</div>
+
+        <h1>🎥 Watch</h1>
+
+        <p>
+            Short Christian videos can be a great way to
+            learn something new, hear encouragement, or
+            explore a question about faith.
+        </p>
+
+    </div>
+
+
+    <div class="video-grid">
+
+        <div class="video-card">
+
+            <div class="video-placeholder">
+                ▶️
+            </div>
+
+            <div class="video-info">
+
+                <h3>Understanding the Bible</h3>
+
+                <p>
+                    A space for short Bible teaching and
+                    Christian education.
+                </p>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:13px;"
+                    onclick="openVideoSearch('Bible study for beginners Christian')">
+                    Find a video →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="video-card">
+
+            <div class="video-placeholder">
+                🎙️
+            </div>
+
+            <div class="video-info">
+
+                <h3>Growing in faith</h3>
+
+                <p>
+                    Encouragement for learning to walk with
+                    Jesus in everyday life.
+                </p>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:13px;"
+                    onclick="openVideoSearch('Christian growing in faith Jesus')">
+                    Find a video →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="video-card">
+
+            <div class="video-placeholder">
+                📖
+            </div>
+
+            <div class="video-info">
+
+                <h3>Bible explained</h3>
+
+                <p>
+                    Explore Bible books, themes and big ideas.
+                </p>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:13px;"
+                    onclick="openVideoSearch('Bible explained Christian')">
+                    Find a video →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="video-card">
+
+            <div class="video-placeholder">
+                🌿
+            </div>
+
+            <div class="video-info">
+
+                <h3>Faith in everyday life</h3>
+
+                <p>
+                    Think about how following Jesus connects
+                    with school, friendships and everyday choices.
+                </p>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:13px;"
+                    onclick="openVideoSearch('Christian faith everyday life teenagers')">
+                    Find a video →
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     SHARED PAGE
+======================================================= -->
+
+<section id="shared" class="page">
+
+    <div class="section-header">
+
+        <div class="eyebrow">Grow together</div>
+
+        <h1>👭 Our space</h1>
+
+        <p>
+            A shared place for you and your friend to encourage
+            each other and talk about what you're learning.
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="col-6">
+
+            <div class="card shared-box">
+
+                <div class="shared-icon">💬</div>
+
+                <h2>Shared thoughts</h2>
+
+                <p>
+                    Talk about today's verse, something you
+                    learned, or something you're thinking about.
+                </p>
+
+                <textarea
+                    id="sharedInput"
+                    placeholder="Share something with your friend..."
+                    style="margin-top:17px;"
+                ></textarea>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:12px;"
+                    onclick="saveShared()">
+                    Save thought
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-6">
+
+            <div class="card">
+
+                <div class="card-title">
+                    🤝 This week's challenge
+                </div>
+
+                <h2>Encourage someone.</h2>
+
+                <p>
+                    Send someone a kind message, pray for them,
+                    or simply let them know you're grateful for them.
+                </p>
+
+                <button
+                    class="btn btn-green"
+                    style="margin-top:18px;"
+                    onclick="completeChallenge()">
+                    Challenge completed ✓
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card" style="margin-top:18px;">
+
+        <div class="card-title">
+            Shared thoughts
+        </div>
+
+        <div class="entries" id="sharedEntries">
+            <p>No shared thoughts yet.</p>
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =======================================================
+     BOTTOM NAV
+======================================================= -->
+
+<nav class="bottom-nav">
+
+    <button class="nav-btn active" data-page="home" onclick="showPage('home')">
+        <span>🏠</span>
+        Home
+    </button>
+
+    <button class="nav-btn" data-page="bible" onclick="showPage('bible')">
+        <span>📖</span>
+        Bible
+    </button>
+
+    <button class="nav-btn" data-page="grow" onclick="showPage('grow')">
+        <span>🌱</span>
+        Grow
+    </button>
+
+    <button class="nav-btn" data-page="prayer" onclick="showPage('prayer')">
+        <span>🙏</span>
+        Pray
+    </button>
+
+    <button class="nav-btn" data-page="journal" onclick="showPage('journal')">
+        <span>📝</span>
+        Journal
+    </button>
+
+</nav>
+
+
+<!-- =======================================================
+     MODAL
+======================================================= -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-card">
+
+        <button class="modal-close" onclick="closeModal()">✕</button>
+
+        <div id="modalContent"></div>
+
+    </div>
+
 </div>
 
+
+<div class="toast" id="toast">
+    Saved ✓
+</div>
+
+
 <script>
-    const verses = [
-        { text: "The Word became flesh and made his dwelling among us. We have seen his glory, the glory of the one and only Son, who came from the Father, full of grace and truth.", ref: "John 1:14", prompt: "Think about how Jesus left heaven to come live among us. What does that say about how much He wants to know you?" },
-        { text: "Come to me, all you who are weary and burdened, and I will give you rest. Take my yoke upon you and learn from me, for I am gentle and humble in heart.", ref: "Matthew 11:28-29", prompt: "Jesus describes His heart as 'gentle and humble.' How does it feel to know you can bring your burdens to someone like that?" },
-        { text: "For even the Son of Man did not come to be served, but to serve, and to give his life as a ransom for many.", ref: "Mark 10:45", prompt: "Jesus is the King of the universe, yet He chose to serve others. How does this challenge or encourage you today?" },
+
+/* =========================================================
+   DAILY VERSES
+   KJV — public domain
+========================================================= */
+
+const verses = [
+
+    {
+        reference: "Matthew 11:28",
+        text: "Come unto me, all ye that labour and are heavy laden, and I will give you rest."
+    },
+
+    {
+        reference: "Psalm 23:1",
+        text: "The LORD is my shepherd; I shall not want."
+    },
+
+    {
+        reference: "Proverbs 3:5",
+        text: "Trust in the LORD with all thine heart; and lean not unto thine own understanding."
+    },
+
+    {
+        reference: "Isaiah 41:10",
+        text: "Fear thou not; for I am with thee: be not dismayed; for I am thy God."
+    },
+
+    {
+        reference: "John 14:6",
+        text: "Jesus saith unto him, I am the way, the truth, and the life."
+    },
+
+    {
+        reference: "John 15:12",
+        text: "This is my commandment, That ye love one another, as I have loved you."
+    },
+
+    {
+        reference: "Romans 8:28",
+        text: "And we know that all things work together for good to them that love God."
+    },
+
+    {
+        reference: "Philippians 4:6",
+        text: "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God."
+    },
+
+    {
+        reference: "Philippians 4:13",
+        text: "I can do all things through Christ which strengtheneth me."
+    },
+
+    {
+        reference: "Psalm 46:10",
+        text: "Be still, and know that I am God."
+    },
+
+    {
+        reference: "Jeremiah 29:11",
+        text: "For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil."
+    },
+
+    {
+        reference: "Psalm 119:105",
+        text: "Thy word is a lamp unto my feet, and a light unto my path."
+    },
+
+    {
+        reference: "Galatians 5:22",
+        text: "But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith."
+    },
+
+    {
+        reference: "1 Peter 5:7",
+        text: "Casting all your care upon him; for he careth for you."
+    },
+
+    {
+        reference: "James 1:5",
+        text: "If any of you lack wisdom, let him ask of God, that giveth to all men liberally."
+    },
+
+    {
+        reference: "Micah 6:8",
+        text: "What doth the LORD require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?"
+    },
+
+    {
+        reference: "Psalm 150:6",
+        text: "Let every thing that hath breath praise the LORD. Praise ye the LORD."
+    },
+
+    {
+        reference: "Colossians 3:23",
+        text: "And whatsoever ye do, do it heartily, as to the Lord, and not unto men."
+    },
+
+    {
+        reference: "1 Corinthians 16:14",
+        text: "Let all your things be done with charity."
+    },
+
+    {
+        reference: "Psalm 34:8",
+        text: "O taste and see that the LORD is good: blessed is the man that trusteth in him."
+    },
+
+    {
+        reference: "Matthew 6:33",
+        text: "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you."
+    },
+
+    {
+        reference: "Romans 12:2",
+        text: "And be not conformed to this world: but be ye transformed by the renewing of your mind."
+    },
+
+    {
+        reference: "Ephesians 4:32",
+        text: "And be ye kind one to another, tenderhearted, forgiving one another."
+    },
+
+    {
+        reference: "Psalm 37:5",
+        text: "Commit thy way unto the LORD; trust also in him; and he shall bring it to pass."
+    },
+
+    {
+        reference: "Joshua 1:9",
+        text: "Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee."
+    },
+
+    {
+        reference: "Matthew 5:16",
+        text: "Let your light so shine before men, that they may see your good works, and glorify your Father."
+    },
+
+    {
+        reference: "1 John 4:19",
+        text: "We love him, because he first loved us."
+    },
+
+    {
+        reference: "Psalm 27:1",
+        text: "The LORD is my light and my salvation; whom shall I fear?"
+    },
+
+    {
+        reference: "John 8:12",
+        text: "I am the light of the world: he that followeth me shall not walk in darkness."
+    },
+
+    {
+        reference: "Hebrews 11:1",
+        text: "Now faith is the substance of things hoped for, the evidence of things not seen."
+    }
+
+];
+
+
+/* =========================================================
+   BIBLE PASSAGES
+========================================================= */
+
+const biblePassages = [
+
+    {
+        reference: "John 15:1–17",
+        title: "Abiding in Jesus",
+        text: "Jesus teaches about remaining in Him and bearing fruit through a life connected to Him."
+    },
+
+    {
+        reference: "Matthew 5:1–16",
+        title: "The Beatitudes",
+        text: "Jesus describes the character and priorities of people who belong to His kingdom."
+    },
+
+    {
+        reference: "Matthew 6:5–18",
+        title: "Learning to pray",
+        text: "Jesus teaches His followers about sincere prayer, including the Lord's Prayer."
+    },
+
+    {
+        reference: "Luke 15:11–32",
+        title: "The prodigal son",
+        text: "A powerful picture of repentance, forgiveness, grace and the Father's heart."
+    },
+
+    {
+        reference: "Psalm 23",
+        title: "The Lord is my shepherd",
+        text: "A beautiful picture of God's care, guidance and presence."
+    },
+
+    {
+        reference: "Romans 12:1–21",
+        title: "A transformed life",
+        text: "Paul describes practical ways believers can live differently because of God's mercy."
+    },
+
+    {
+        reference: "1 Corinthians 13",
+        title: "The way of love",
+        text: "A famous description of what genuine love looks like in action."
+    },
+
+    {
+        reference: "Galatians 5:13–26",
+        title: "The fruit of the Spirit",
+        text: "Explore the difference between living according to selfish desires and walking by the Spirit."
+    },
+
+    {
+        reference: "Philippians 2:1–11",
+        title: "The humility of Jesus",
+        text: "Consider the humility and servant-heartedness of Christ."
+    },
+
+    {
+        reference: "James 1:19–27",
+        title: "Faith in action",
+        text: "A practical passage about listening, doing God's word and caring for others."
+    }
+
+];
+
+
+/* =========================================================
+   CHALLENGES
+========================================================= */
+
+const challenges = [
+
+    {
+        title: "Pray for someone",
+        text: "Think of one person who needs encouragement and spend a few minutes praying for them."
+    },
+
+    {
+        title: "Read slowly",
+        text: "Read today's verse three times. Notice a word or phrase that stands out."
+    },
+
+    {
+        title: "Encourage someone",
+        text: "Send a genuine message to someone and let them know you appreciate them."
+    },
+
+    {
+        title: "Practice gratitude",
+        text: "Write down three things you are thankful to God for today."
+    },
+
+    {
+        title: "Choose kindness",
+        text: "Look for one small opportunity today to serve someone without expecting anything back."
+    },
+
+    {
+        title: "Be still",
+        text: "Spend five quiet minutes without distractions, simply talking to God."
+    },
+
+    {
+        title: "Forgive",
+        text: "Ask God to help you release resentment and respond to others with grace."
+    }
+
+];
+
+
+/* =========================================================
+   PROMPTS
+========================================================= */
+
+const journalPrompts = [
+
+    "What did you learn about Jesus today?",
+
+    "What part of today's Bible reading stood out to you?",
+
+    "What do you think God is teaching you right now?",
+
+    "Where do you want to become more like Jesus?",
+
+    "What are you thankful to God for today?",
+
+    "What is something you need to surrender to God?",
+
+    "How can you show Jesus' love to someone today?",
+
+    "What question would you like to ask God?"
+];
+
+const prayerPrompts = [
+
+    "What are you thankful for today?",
+
+    "Who can you pray for today?",
+
+    "What are you asking God for wisdom about?",
+
+    "What do you need to surrender to God?",
+
+    "Where do you need God's peace?",
+
+    "What area of your life do you want God to transform?",
+
+    "What are you hoping God will teach you?"
+];
+
+
+/* =========================================================
+   STORAGE HELPERS
+========================================================= */
+
+function getData(key, fallback) {
+
+    try {
+
+        const value = localStorage.getItem(key);
+
+        return value ? JSON.parse(value) : fallback;
+
+    } catch {
+
+        return fallback;
+
+    }
+
+}
+
+
+function setData(key, value) {
+
+    localStorage.setItem(key, JSON.stringify(value));
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function getDateKey(date = new Date()) {
+
+    return date.toISOString().split("T")[0];
+
+}
+
+
+function getDayNumber() {
+
+    const start = new Date("2026-01-01T00:00:00");
+
+    const today = new Date();
+
+    const difference =
+        Math.floor(
+            (today - start) / (1000 * 60 * 60 * 24)
+        );
+
+    return Math.abs(difference);
+
+}
+
+
+/* =========================================================
+   DAILY VERSE
+========================================================= */
+
+function getDailyVerse() {
+
+    const index = getDayNumber() % verses.length;
+
+    return verses[index];
+
+}
+
+
+function displayDailyVerse() {
+
+    const verse = getDailyVerse();
+
+    document.getElementById("dailyVerseText").textContent =
+        verse.text;
+
+    document.getElementById("dailyVerseReference").textContent =
+        verse.reference;
+
+}
+
+
+function saveDailyVerse() {
+
+    const verse = getDailyVerse();
+
+    let saved = getData("savedVerses", []);
+
+    const exists =
+        saved.some(v => v.reference === verse.reference);
+
+    if (!exists) {
+
+        saved.unshift(verse);
+
+        setData("savedVerses", saved);
+
+        showToast("Verse saved ♡");
+
+    } else {
+
+        showToast("Already saved ♡");
+
+    }
+
+}
+
+
+function shareVerse() {
+
+    const verse = getDailyVerse();
+
+    const text =
+        `"${verse.text}" — ${verse.reference}\n\nGrowing to be More Like Jesus`;
+
+    if (navigator.share) {
+
+        navigator.share({
+            title: "Today's Bible verse",
+            text
+        });
+
+    } else {
+
+        navigator.clipboard.writeText(text);
+
+        showToast("Verse copied ✓");
+
+    }
+
+}
+
+
+/* =========================================================
+   STREAK
+========================================================= */
+
+function completeToday() {
+
+    const today = getDateKey();
+
+    let studyDays = getData("studyDays", []);
+
+    if (!studyDays.includes(today)) {
+
+        studyDays.push(today);
+
+        setData("studyDays", studyDays);
+
+        showToast("Today's study complete 🌱");
+
+    } else {
+
+        showToast("You've already completed today ✓");
+
+    }
+
+    updateStreak();
+
+}
+
+
+function updateStreak() {
+
+    const days = getData("studyDays", []);
+
+    let streak = 0;
+
+    let current = new Date();
+
+    while (true) {
+
+        const key = getDateKey(current);
+
+        if (days.includes(key)) {
+
+            streak++;
+
+            current.setDate(current.getDate() - 1);
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+    document.getElementById("streakNumber").textContent =
+        streak;
+
+    const growth =
+        Math.min(streak * 5, 100);
+
+    document.getElementById("homeProgress").style.width =
+        growth + "%";
+
+    document.getElementById("growthText").textContent =
+        `${days.length} day${days.length === 1 ? "" : "s"} completed`;
+
+}
+
+
+/* =========================================================
+   MOOD
+========================================================= */
+
+function selectMood(button, mood) {
+
+    document.querySelectorAll(".mood")
+        .forEach(b => b.classList.remove("selected"));
+
+    button.classList.add("selected");
+
+    localStorage.setItem("todayMood", mood);
+
+    const messages = {
+
+        Grateful:
+            "A grateful heart is a beautiful place to begin. 🙏",
+
+        Heavy:
+            "You don't have to hide a heavy heart from God. Bring it honestly to Him. 🤍",
+
+        Inspired:
+            "Use that energy to spend some intentional time with God today. 🌱",
+
+        Tired:
+            "You don't need perfect energy to come to Jesus. Just come as you are. 🕊️"
+
+    };
+
+    document.getElementById("moodMessage").textContent =
+        messages[mood];
+
+}
+
+
+/* =========================================================
+   CHALLENGE
+========================================================= */
+
+function displayChallenge() {
+
+    const challenge =
+        challenges[getDayNumber() % challenges.length];
+
+    document.getElementById("challengeTitle").textContent =
+        challenge.title;
+
+    document.getElementById("challengeText").textContent =
+        challenge.text;
+
+}
+
+
+function completeChallenge() {
+
+    const key = getDateKey();
+
+    let completed =
+        getData("challengesCompleted", []);
+
+    if (!completed.includes(key)) {
+
+        completed.push(key);
+
+        setData("challengesCompleted", completed);
+
+        showToast("Challenge completed 🎉");
+
+    } else {
+
+        showToast("Challenge already completed ✓");
+
+    }
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(pageId) {
+
+    document.querySelectorAll(".page")
+        .forEach(page => page.classList.remove("active"));
+
+    const page =
+        document.getElementById(pageId);
+
+    if (!page) return;
+
+    page.classList.add("active");
+
+    document.querySelectorAll(".nav-btn")
+        .forEach(btn => {
+
+            btn.classList.toggle(
+                "active",
+                btn.dataset.page === pageId
+            );
+
+        });
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   BIBLE SEARCH
+========================================================= */
+
+function displayBiblePassages(list = biblePassages) {
+
+    const container =
+        document.getElementById("passageList");
+
+    if (!list.length) {
+
+        container.innerHTML =
+            `<p style="color:var(--muted);padding:15px;">
+                No passages found.
+            </p>`;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        list.map((passage, index) => `
+
+            <div
+                class="passage"
+                onclick="openPassage(${index})">
+
+                <div class="passage-reference">
+                    ${passage.reference}
+                </div>
+
+                <h3>
+                    ${passage.title}
+                </h3>
+
+                <div class="passage-text">
+                    ${passage.text}
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+function searchBible() {
+
+    const query =
+        document
+            .getElementById("bibleSearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+    if (!query) {
+
+        displayBiblePassages();
+
+        return;
+
+    }
+
+    const results =
+        biblePassages.filter(passage =>
+
+            `${passage.reference}
+             ${passage.title}
+             ${passage.text}`
+                .toLowerCase()
+                .includes(query)
+
+        );
+
+    displayBiblePassages(results);
+
+}
+
+
+function openPassage(index) {
+
+    const passage =
+        biblePassages[index];
+
+    document.getElementById("modalContent").innerHTML = `
+
+        <div class="eyebrow">
+            Bible study
+        </div>
+
+        <h2>
+            ${passage.title}
+        </h2>
+
+        <p style="
+            color:var(--gold-light);
+            font-weight:700;
+            margin:10px 0 20px;
+        ">
+            ${passage.reference}
+        </p>
+
+        <p style="
+            font-size:18px;
+            line-height:1.8;
+        ">
+            ${passage.text}
+        </p>
+
+        <div class="card" style="
+            margin-top:20px;
+            background:rgba(217,170,91,.05);
+        ">
+
+            <div class="card-title">
+                Reflect
+            </div>
+
+            <p>
+                What does this passage teach you about Jesus?
+                What is one thing you could put into practice?
+            </p>
+
+        </div>
+
+    `;
+
+    openModal();
+
+}
+
+
+/* =========================================================
+   GROW TOPICS
+========================================================= */
+
+const topicData = {
+
+    "Knowing Jesus": {
+
+        verse: "John 15:9",
+
+        message:
+            "Getting to know Jesus is more than knowing facts about Him. Read the Gospels and pay attention to how He treats people, what He teaches, what He values, and how He responds to suffering."
+
+    },
+
+    "Trusting God": {
+
+        verse: "Proverbs 3:5–6",
+
+        message:
+            "Trust doesn't mean that you understand everything. It means choosing to place your confidence in God even when you cannot see the whole picture."
+
+    },
+
+    "Loving Others": {
+
+        verse: "John 13:34",
+
+        message:
+            "Jesus calls His followers to love others in the same self-giving way He has loved us."
+
+    },
+
+    "Forgiveness": {
+
+        verse: "Ephesians 4:32",
+
+        message:
+            "Forgiveness is not pretending that hurt didn't happen. It is choosing grace and refusing to let bitterness control your heart."
+
+    },
+
+    "Prayer": {
+
+        verse: "Philippians 4:6",
+
+        message:
+            "Prayer can be honest. Bring your worries, gratitude, questions and hopes to God instead of feeling like you need perfect words."
+
+    },
+
+    "Serving": {
+
+        verse: "Mark 10:45",
+
+        message:
+            "Jesus showed leadership through serving. Look for small opportunities to make another person's day better."
+
+    }
+
+};
+
+
+function openTopic(topic) {
+
+    const data = topicData[topic];
+
+    document.getElementById("modalContent").innerHTML = `
+
+        <div class="eyebrow">
+            Growing like Jesus
+        </div>
+
+        <h2>
+            ${topic}
+        </h2>
+
+        <p style="
+            color:var(--gold-light);
+            margin:10px 0 20px;
+            font-weight:700;
+        ">
+            ${data.verse}
+        </p>
+
+        <p style="
+            font-size:18px;
+            line-height:1.8;
+        ">
+            ${data.message}
+        </p>
+
+        <div class="card" style="
+            margin-top:20px;
+            background:rgba(127,155,114,.06);
+        ">
+
+            <div class="card-title">
+                Ask yourself
+            </div>
+
+            <p>
+                What is one small way I can live this out today?
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            style="margin-top:18px;"
+            onclick="showPage('journal');closeModal();">
+
+            Reflect in journal →
+
+        </button>
+
+    `;
+
+    openModal();
+
+}
+
+
+/* =========================================================
+   JOURNAL
+========================================================= */
+
+function saveJournal() {
+
+    const input =
+        document.getElementById("journalInput");
+
+    const text =
+        input.value.trim();
+
+    if (!text) {
+
+        showToast("Write something first 🤍");
+
+        return;
+
+    }
+
+    let entries =
+        getData("journalEntries", []);
+
+    entries.unshift({
+
+        date: new Date().toLocaleDateString(
+            undefined,
+            {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        ),
+
+        text
+
+    });
+
+    setData("journalEntries", entries);
+
+    input.value = "";
+
+    renderJournal();
+
+    showToast("Reflection saved 📝");
+
+}
+
+
+function renderJournal() {
+
+    const container =
+        document.getElementById("journalEntries");
+
+    const entries =
+        getData("journalEntries", []);
+
+    if (!entries.length) {
+
+        container.innerHTML =
+            "<p>No reflections yet.</p>";
+
+        return;
+
+    }
+
+    container.innerHTML =
+        entries.map(entry => `
+
+            <div class="entry">
+
+                <div class="entry-date">
+                    ${entry.date}
+                </div>
+
+                <div class="entry-text">
+                    ${escapeHTML(entry.text)}
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+function newJournalPrompt() {
+
+    const current =
+        document.getElementById("journalPrompt")
+            .textContent;
+
+    let prompt;
+
+    do {
+
+        prompt =
+            journalPrompts[
+                Math.floor(Math.random() * journalPrompts.length)
+            ];
+
+    } while (
+        prompt === current &&
+        journalPrompts.length > 1
+    );
+
+    document.getElementById("journalPrompt")
+        .textContent = prompt;
+
+}
+
+
+/* =========================================================
+   PRAYER
+========================================================= */
+
+function selectCategory(button) {
+
+    document.querySelectorAll(".category")
+        .forEach(b => b.classList.remove("selected"));
+
+    button.classList.add("selected");
+
+}
+
+
+function savePrayer() {
+
+    const input =
+        document.getElementById("prayerInput");
+
+    const text =
+        input.value.trim();
+
+    if (!text) {
+
+        showToast("Write your prayer first 🤍");
+
+        return;
+
+    }
+
+    let prayers =
+        getData("prayers", []);
+
+    prayers.unshift({
+
+        date: new Date().toLocaleDateString(
+            undefined,
+            {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        ),
+
+        text
+
+    });
+
+    setData("prayers", prayers);
+
+    input.value = "";
+
+    renderPrayers();
+
+    showToast("Prayer saved 🙏");
+
+}
+
+
+function renderPrayers() {
+
+    const container =
+        document.getElementById("prayerEntries");
+
+    const prayers =
+        getData("prayers", []);
+
+    if (!prayers.length) {
+
+        container.innerHTML =
+            "<p>No prayers saved yet.</p>";
+
+        return;
+
+    }
+
+    container.innerHTML =
+        prayers.map(prayer => `
+
+            <div class="entry">
+
+                <div class="entry-date">
+                    ${prayer.date}
+                </div>
+
+                <div class="entry-text">
+                    ${escapeHTML(prayer.text)}
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+function newPrayerPrompt() {
+
+    const current =
+        document.getElementById("prayerPrompt")
+            .textContent;
+
+    let prompt;
+
+    do {
+
+        prompt =
+            prayerPrompts[
+                Math.floor(Math.random() * prayerPrompts.length)
+            ];
+
+    } while (
+        prompt === current &&
+        prayerPrompts.length > 1
+    );
+
+    document.getElementById("prayerPrompt")
+        .textContent = prompt;
+
+}
+
+
+/* =========================================================
+   SHARED THOUGHTS
+========================================================= */
+
+function saveShared() {
+
+    const input =
+        document.getElementById("sharedInput");
+
+    const text =
+        input.value.trim();
+
+    if (!text) {
+
+        showToast("Write something first 🤍");
+
+        return;
+
+    }
+
+    let entries =
+        getData("sharedEntries", []);
+
+    entries.unshift({
+
+        date: new Date().toLocaleDateString(
+            undefined,
+            {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        ),
+
+        text
+
+    });
+
+    setData("sharedEntries", entries);
+
+    input.value = "";
+
+    renderShared();
+
+    showToast("Thought saved 💬");
+
+}
+
+
+function renderShared() {
+
+    const container =
+        document.getElementById("sharedEntries");
+
+    const entries =
+        getData("sharedEntries", []);
+
+    if (!entries.length) {
+
+        container.innerHTML =
+            "<p>No shared thoughts yet.</p>";
+
+        return;
+
+    }
+
+    container.innerHTML =
+        entries.map(entry => `
+
+            <div class="entry">
+
+                <div class="entry-date">
+                    ${entry.date}
+                </div>
+
+                <div class="entry-text">
+                    ${escapeHTML(entry.text)}
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* =========================================================
+   VIDEO SEARCH
+========================================================= */
+
+function openVideoSearch(query) {
+
+    const url =
+        "https://www.youtube.com/results?search_query=" +
+        encodeURIComponent(query);
+
+    window.open(url, "_blank");
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal() {
+
+    document
+        .getElementById("modal")
+        .classList.add("open");
+
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById("modal")
+        .classList.remove("open");
+
+}
+
+
+document
+    .getElementById("modal")
+    .addEventListener("click", function(event) {
+
+        if (event.target === this) {
+
+            closeModal();
+
+        }
+
+    });
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2200);
+
+}
+
+
+/* =========================================================
+   SECURITY HELPER
+========================================================= */
+
+function escapeHTML(text) {
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   DATE DISPLAY
+========================================================= */
+
+function displayDate() {
+
+    const today =
+        new Date();
+
+    document.getElementById("todayDate")
+        .textContent =
+        today.toLocaleDateString(
+            undefined,
+            {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            }
+        );
+
+}
+
+
+/* =========================================================
+   INITIALIZE APP
+========================================================= */
+
+function initializeApp() {
+
+    displayDate();
+
+    displayDailyVerse();
+
+    displayChallenge();
+
+    updateStreak();
+
+    displayBiblePassages();
+
+    renderJournal();
+
+    renderPrayers();
+
+    renderShared();
+
+    const savedMood =
+        localStorage.getItem("todayMood");
+
+    if (savedMood) {
+
+        document.querySelectorAll(".mood")
+            .forEach(button => {
+
+                if (
+                    button.textContent
+                        .toLowerCase()
+                        .includes(savedMood.toLowerCase())
+                ) {
+
+                    button.classList.add("selected");
+
+                }
+
+            });
+
+    }
+
+}
+
+
+/* Start */
+
+initializeApp();
+
+</script>
+
+</body>
+</html>
