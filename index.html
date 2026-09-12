@@ -6,162 +6,265 @@
     <title>Daily Jesus Bible Study</title>
     <style>
         :root {
-            --primary: #4a5568;
-            --accent: #3182ce;
-            --bg: #f7fafc;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --muted: #718096;
+            --bg: #000000;
+            --card-bg: #121214;
+            --border: #1f1f23;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --streak-color: #f59e0b;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 500px;
             width: 100%;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
+            margin-top: 10px;
         }
 
         h1 {
-            color: var(--primary);
-            margin-bottom: 5px;
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(to right, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
         }
 
         .subtitle {
-            color: var(--muted);
+            color: var(--text-muted);
+            font-size: 14px;
             margin-top: 0;
+        }
+
+        /* Streak Element */
+        .streak-container {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--streak-color);
+            margin-bottom: 20px;
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:active {
+            transform: scale(0.99);
+            border-color: var(--accent);
         }
 
         .verse-tag {
             display: inline-block;
-            background: #ebf8ff;
-            color: var(--accent);
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 14px;
         }
 
         .verse-text {
             font-size: 18px;
             line-height: 1.6;
             font-style: italic;
-            margin-bottom: 15px;
+            color: #f9fafb;
+            margin-bottom: 12px;
         }
 
         .verse-ref {
-            font-weight: bold;
-            color: var(--primary);
+            font-weight: 700;
+            color: #60a5fa;
             text-align: right;
+            font-size: 14px;
         }
 
         .prompt-box {
-            background: #f7fafc;
-            border-left: 4px solid var(--accent);
-            padding: 12px;
-            margin-top: 15px;
-            border-radius: 0 8px 8px 0;
+            background: #18181b;
+            border-left: 3px solid var(--accent);
+            padding: 14px;
+            margin-top: 20px;
+            border-radius: 0 12px 12px 0;
         }
 
         .prompt-title {
             font-weight: bold;
+            font-size: 13px;
+            color: #60a5fa;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .prompt-text {
             font-size: 14px;
-            color: var(--accent);
-            margin-bottom: 4px;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        /* Interactive Mood Checker */
+        .mood-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mood-btn {
+            background: #18181b;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 4px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .mood-btn span {
+            font-size: 18px;
+        }
+
+        .mood-btn.selected {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+            color: #60a5fa;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 6px;
+            color: #f9fafb;
         }
 
         textarea {
             width: 100%;
-            height: 120px;
-            padding: 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            resize: vertical;
+            height: 110px;
+            padding: 14px;
+            background: #18181b;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
+            resize: none;
             box-sizing: border-box;
             font-family: inherit;
-            font-size: 15px;
-            margin-bottom: 10px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
         }
 
         textarea:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background: #1c1c21;
         }
 
-        button {
-            background-color: var(--accent);
+        .action-btn {
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            font-size: 15px;
+            font-size: 14px;
+            transition: background 0.2s ease;
+            box-shadow: 0 4px 12px var(--accent-glow);
         }
 
-        button:hover {
-            background-color: #2b6cb0;
+        .action-btn:hidden {
+            display: none;
+        }
+
+        .action-btn:active {
+            background: #2563eb;
         }
 
         .saved-notes {
-            margin-top: 15px;
+            margin-top: 14px;
             font-size: 14px;
-            color: var(--primary);
+            color: #e5e7eb;
             white-space: pre-wrap;
-            background: #f7fafc;
+            background: #18181b;
+            border: 1px solid var(--border);
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 12px;
             display: none;
         }
 
         .tracker-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 6px;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .day-label {
-            font-size: 12px;
-            color: var(--muted);
-            margin-bottom: 4px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
         }
 
         .checkbox-container {
-            background: #f7fafc;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
+            background: #18181b;
+            border: 1px solid var(--border);
+            padding: 10px 0;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
         }
 
         .checkbox-container.active {
-            background: #edf2f7;
-            font-weight: bold;
+            background: var(--accent-glow);
+            border-color: var(--accent);
         }
     </style>
 </head>
@@ -171,6 +274,9 @@
     <header>
         <h1>Our Daily Study</h1>
         <p class="subtitle">Getting to know Jesus, one day at a time.</p>
+        <div class="streak-container">
+            🔥 Reading Streak: <span id="streakCount" style="margin-left: 4px;">0</span> Days
+        </div>
     </header>
 
     <!-- Bible Verse Card -->
@@ -181,114 +287,38 @@
         
         <div class="prompt-box">
             <div class="prompt-title">Reflection Prompt</div>
-            <div id="promptText">What does this tell us about Jesus' heart?</div>
+            <div class="prompt-text" id="promptText">...</div>
         </div>
     </div>
 
-    <!-- Discussion Board Card -->
+    <!-- Interactive Check-In -->
     <div class="card">
-        <h3>Shared Notes & Discussion</h3>
-        <p class="subtitle" style="font-size: 13px; margin-bottom: 12px;">Type your thoughts, prayers, or questions below.</p>
-        <textarea id="discussionInput" placeholder="Write something here..."></textarea>
-        <button onclick="saveNotes()">Save Thoughts</button>
+        <div class="mood-title">How is your heart before studying today?</div>
+        <div class="mood-grid">
+            <button class="mood-btn" onclick="selectMood(this, '🙏 Grateful')"><span>🙏</span>Grateful</button>
+            <button class="mood-btn" onclick="selectMood(this, '⛰️ Struggling')"><span>⛰️</span>Heavy</button>
+            <button class="mood-btn" onclick="selectMood(this, '⚡ Inspired')"><span>⚡</span>Inspired</button>
+            <button class="mood-btn" onclick="selectMood(this, '⏳ Tired')"><span>⏳</span>Tired</button>
+        </div>
+    </div>
+
+    <!-- Chat & Journaling -->
+    <div class="card">
+        <h3>Shared Thoughts & Prayers</h3>
+        <textarea id="discussionInput" placeholder="What stood out to you? Share a prayer request..."></textarea>
+        <button class="action-btn" onclick="saveNotes()">Save & Share Thoughts</button>
         <div id="savedNotesDisplay" class="saved-notes"></div>
     </div>
 
-    <!-- Habit Tracker Card -->
+    <!-- Weekly Checklist -->
     <div class="card">
         <h3>Weekly Progress</h3>
-        <p class="subtitle" style="font-size: 13px; margin-bottom: 12px;">Click a day to mark your reading complete.</p>
-        <div class="tracker-grid" id="trackerGrid">
-            <!-- Days will generate here via JavaScript -->
-        </div>
+        <div class="tracker-grid" id="trackerGrid"></div>
     </div>
 </div>
 
 <script>
-    // 7 Days of verses focusing entirely on Jesus
     const verses = [
-        {
-            text: "The Word became flesh and made his dwelling among us. We have seen his glory, the glory of the one and only Son, who came from the Father, full of grace and truth.",
-            ref: "John 1:14",
-            prompt: "Think about how Jesus left heaven to come live among us. What does that say about how much He wants to know you?"
-        },
-        {
-            text: "Come to me, all you who are weary and burdened, and I will give you rest. Take my yoke upon you and learn from me, for I am gentle and humble in heart.",
-            ref: "Matthew 11:28-29",
-            prompt: "Jesus describes His heart as 'gentle and humble.' How does it feel to know you can bring your burdens to someone like that?"
-        },
-        {
-            text: "For even the Son of Man did not come to be served, but to serve, and to give his life as a ransom for many.",
-            ref: "Mark 10:45",
-            prompt: "Jesus is the King of the universe, yet He chose to serve others. How does this challenge or encourage you today?"
-        },
-        {
-            text: "Jesus wept. Then the Jews said, 'See how he loved him!'",
-            ref: "John 11:35-36",
-            prompt: "Jesus openly showed sadness when His friends were hurting. How does it make you feel to know Jesus cares deeply about your hurts too?"
-        },
-        {
-            text: "I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing.",
-            ref: "John 15:5",
-            prompt: "What does it mean to 'remain' or stay connected to Jesus throughout your day?"
-        },
-        {
-            text: "But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.",
-            ref: "Romans 5:8",
-            prompt: "Jesus didn't wait for us to become perfect before dying for us. How does this change the way you view His love?"
-        },
-        {
-            text: "And surely I am with you always, to the very end of the age.",
-            ref: "Matthew 28:20",
-            prompt: "Even when we feel lonely or isolated, Jesus promises His presence. Where do you need to remember He is with you today?"
-        }
-    ];
-
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    // 1. Load Daily Verse automatically based on the current day
-    function loadDailyVerse() {
-        const currentDayIndex = new Date().getDay(); // 0 (Sun) to 6 (Sat)
-        const todaysData = verses[currentDayIndex];
-        
-        document.getElementById('verseText').innerText = `"${todaysData.text}"`;
-        document.getElementById('verseRef').innerText = `- ${todaysData.ref}`;
-        document.getElementById('promptText').innerText = todaysData.prompt;
-    }
-
-    // 2. Save and Load Discussion Text using browser memory
-    function saveNotes() {
-        const input = document.getElementById('discussionInput').value;
-        localStorage.setItem('bibleStudyNotes', input);
-        displayNotes();
-        alert("Saved! (Note: Because this is a simple local website, it currently saves right on your specific screen.)");
-    }
-
-    function displayNotes() {
-        const savedData = localStorage.getItem('bibleStudyNotes');
-        const displayDiv = document.getElementById('savedNotesDisplay');
-        if (savedData) {
-            displayDiv.innerText = savedData;
-            displayDiv.style.display = 'block';
-        }
-    }
-
-    // 3. Build the Habit Tracker Layout
-    function buildTracker() {
-        const grid = document.getElementById('trackerGrid');
-        const savedHabits = JSON.parse(localStorage.getItem('bibleStudyHabits')) || {};
-
-        daysOfWeek.forEach(day => {
-            const container = document.createElement('div');
-            
-            const label = document.createElement('div');
-            label.className = 'day-label';
-            label.innerText = day.substring(0, 3);
-            
-            const checkboxBox = document.createElement('div');
-            checkboxBox.className = 'checkbox-container';
-            checkboxBox.innerText = savedHabits[day] ? '✅' : '⬜';
-            if (savedHabits[day]) checkboxBox.classList.add('active');
-            
-            checkboxBox.onclick = function() {
-                savedHabits[day] = !savedHabits[day];
+        { text: "The Word became flesh and made his dwelling among us. We have seen his glory, the glory of the one and only Son, who came from the Father, full of grace and truth.", ref: "John 1:14", prompt: "Think about how Jesus left heaven to come live among us. What does that say about how much He wants to know you?" },
+        { text: "Come to me, all you who are weary and burdened, and I will give you rest. Take my yoke upon you and learn from me, for I am gentle and humble in heart.", ref: "Matthew 11:28-29", prompt: "Jesus describes His heart as 'gentle and humble.' How does it feel to know you can bring your burdens to someone like that?" },
+        { text: "For even the Son of Man did not come to be served, but to serve, and to give his life as a ransom for many.", ref: "Mark 10:45", prompt: "Jesus is the King of the universe, yet He chose to serve others. How does this challenge or encourage you today?" },
