@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Jesus Bible Study</title>
+    <style>
+        :root {
+            --primary: #4a5568;
+            --accent: #3182ce;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --muted: #718096;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-top: 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .verse-tag {
+            display: inline-block;
+            background: #ebf8ff;
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .verse-text {
+            font-size: 18px;
+            line-height: 1.6;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .verse-ref {
+            font-weight: bold;
+            color: var(--primary);
+            text-align: right;
+        }
+
+        .prompt-box {
+            background: #f7fafc;
+            border-left: 4px solid var(--accent);
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .prompt-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            resize: vertical;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #2b6cb0;
+        }
+
+        .saved-notes {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--primary);
+            white-space: pre-wrap;
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .tracker-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .day-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .checkbox-container {
+            background: #f7fafc;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .checkbox-container.active {
+            background: #edf2f7;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Our Daily Study</h1>
+        <p class="subtitle">Getting to know Jesus, one day at a time.</p>
+    </header>
+
+    <!-- Bible Verse Card -->
+    <div class="card">
+        <div class="verse-tag">Today's Focus</div>
+        <div class="verse-text" id="verseText">Loading daily verse...</div>
+        <div class="verse-ref" id="verseRef">...</div>
+        
+        <div class="prompt-box">
+            <div class="prompt-title">Reflection Prompt</div>
+            <div id="promptText">What does this tell us about Jesus' heart?</div>
+        </div>
+    </div>
+
+    <!-- Discussion Board Card -->
+    <div class="card">
+        <h3>Shared Notes & Discussion</h3>
+        <p class="subtitle" style="font-size: 13px; margin-bottom: 12px;">Type your thoughts, prayers, or questions below.</p>
+        <textarea id="discussionInput" placeholder="Write something here..."></textarea>
+        <button onclick="saveNotes()">Save Thoughts</button>
+        <div id="savedNotesDisplay" class="saved-notes"></div>
+    </div>
+
+    <!-- Habit Tracker Card -->
+    <div class="card">
+        <h3>Weekly Progress</h3>
+        <p class="subtitle" style="font-size: 13px; margin-bottom: 12px;">Click a day to mark your reading complete.</p>
+        <div class="tracker-grid" id="trackerGrid">
+            <!-- Days will generate here via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // 7 Days of verses focusing entirely on Jesus
+    const verses = [
+        {
+            text: "The Word became flesh and made his dwelling among us. We have seen his glory, the glory of the one and only Son, who came from the Father, full of grace and truth.",
+            ref: "John 1:14",
+            prompt: "Think about how Jesus left heaven to come live among us. What does that say about how much He wants to know you?"
+        },
+        {
+            text: "Come to me, all you who are weary and burdened, and I will give you rest. Take my yoke upon you and learn from me, for I am gentle and humble in heart.",
+            ref: "Matthew 11:28-29",
+            prompt: "Jesus describes His heart as 'gentle and humble.' How does it feel to know you can bring your burdens to someone like that?"
+        },
+        {
+            text: "For even the Son of Man did not come to be served, but to serve, and to give his life as a ransom for many.",
+            ref: "Mark 10:45",
+            prompt: "Jesus is the King of the universe, yet He chose to serve others. How does this challenge or encourage you today?"
+        },
+        {
+            text: "Jesus wept. Then the Jews said, 'See how he loved him!'",
+            ref: "John 11:35-36",
+            prompt: "Jesus openly showed sadness when His friends were hurting. How does it make you feel to know Jesus cares deeply about your hurts too?"
+        },
+        {
+            text: "I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing.",
+            ref: "John 15:5",
+            prompt: "What does it mean to 'remain' or stay connected to Jesus throughout your day?"
+        },
+        {
+            text: "But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.",
+            ref: "Romans 5:8",
+            prompt: "Jesus didn't wait for us to become perfect before dying for us. How does this change the way you view His love?"
+        },
+        {
+            text: "And surely I am with you always, to the very end of the age.",
+            ref: "Matthew 28:20",
+            prompt: "Even when we feel lonely or isolated, Jesus promises His presence. Where do you need to remember He is with you today?"
+        }
+    ];
+
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    // 1. Load Daily Verse automatically based on the current day
+    function loadDailyVerse() {
+        const currentDayIndex = new Date().getDay(); // 0 (Sun) to 6 (Sat)
+        const todaysData = verses[currentDayIndex];
+        
+        document.getElementById('verseText').innerText = `"${todaysData.text}"`;
+        document.getElementById('verseRef').innerText = `- ${todaysData.ref}`;
+        document.getElementById('promptText').innerText = todaysData.prompt;
+    }
+
+    // 2. Save and Load Discussion Text using browser memory
+    function saveNotes() {
+        const input = document.getElementById('discussionInput').value;
+        localStorage.setItem('bibleStudyNotes', input);
+        displayNotes();
+        alert("Saved! (Note: Because this is a simple local website, it currently saves right on your specific screen.)");
+    }
+
+    function displayNotes() {
+        const savedData = localStorage.getItem('bibleStudyNotes');
+        const displayDiv = document.getElementById('savedNotesDisplay');
+        if (savedData) {
+            displayDiv.innerText = savedData;
+            displayDiv.style.display = 'block';
+        }
+    }
+
+    // 3. Build the Habit Tracker Layout
+    function buildTracker() {
+        const grid = document.getElementById('trackerGrid');
+        const savedHabits = JSON.parse(localStorage.getItem('bibleStudyHabits')) || {};
+
+        daysOfWeek.forEach(day => {
+            const container = document.createElement('div');
+            
+            const label = document.createElement('div');
+            label.className = 'day-label';
+            label.innerText = day.substring(0, 3);
+            
+            const checkboxBox = document.createElement('div');
+            checkboxBox.className = 'checkbox-container';
+            checkboxBox.innerText = savedHabits[day] ? '✅' : '⬜';
+            if (savedHabits[day]) checkboxBox.classList.add('active');
+            
+            checkboxBox.onclick = function() {
+                savedHabits[day] = !savedHabits[day];
