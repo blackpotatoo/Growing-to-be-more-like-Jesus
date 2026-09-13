@@ -4692,7 +4692,16 @@ function applyBibleHighlight(color) {
 
     verseElement.dataset.highlightColor =
         color;
+const chapterText =
+    document.getElementById("bibleChapterText");
 
+chapterText
+    ?.querySelectorAll(".bible-verse-selected")
+    .forEach((element) => {
+        element.classList.remove(
+            "bible-verse-selected"
+        );
+    });
     hideBibleHighlightToolbar();
 }
 
