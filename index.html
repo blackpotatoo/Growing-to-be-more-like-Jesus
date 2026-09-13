@@ -3988,6 +3988,7 @@ const bibleBooks = [
 
 let selectedBibleBook = null;
 let selectedBibleChapter = null;
+let activeBibleId = null;
 
 
 function initializeBibleReader() {
@@ -4261,6 +4262,7 @@ async function openBibleChapter(chapter) {
                 `The ${translation.toUpperCase()} translation was not found in your API.Bible account.`
             );
         }
+      activeBibleId = selectedBible.id;
 
         const bookCode =
             bookCodes[selectedBibleBook.name];
@@ -4634,7 +4636,7 @@ function showBibleHighlightToolbar() {
 
     toolbar.classList.add("show");
 }
-function applyBibleHighlight(color) {
+async function applyBibleHighlight(color) {
     if (!selectedBibleVerseElement || !selectedBibleVerseForTools) {
         return;
     }
@@ -4692,6 +4694,46 @@ function applyBibleHighlight(color) {
 
     verseElement.dataset.highlightColor =
         color;
+      if (
+    currentUser &&
+    activeBibleId &&
+    selectedBibleBook &&
+    selectedBibleChapter
+) {
+    const translation =
+        document.getElementById("bibleTranslation")?.value ||
+        "kjv";
+
+    const { error } =
+        await supabaseClient
+            .from("bible_highlights")
+            .upsert(
+                {
+                    user_id: currentUser.id,
+                    bible_id: activeBibleId,
+                    translation: translation,
+                    book_name: selectedBibleBook.name,
+                    chapter: selectedBibleChapter,
+                    verse: verseNumber,
+                    color: color
+                },
+                {
+                    onConflict:
+                        "user_id,bible_id,book_name,chapter,verse"
+                }
+            );
+
+    if (error) {
+        console.error(
+            "Could not save Bible highlight:",
+            error
+        );
+
+        showToast(
+            "Highlight added, but couldn't save it yet."
+        );
+    }
+}
 const chapterText =
     document.getElementById("bibleChapterText");
 
