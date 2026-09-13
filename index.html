@@ -1789,7 +1789,20 @@ textarea:focus,
 
     <!-- BIBLE HOME -->
     <div id="bibleHomeView">
-
+<button
+    class="btn btn-secondary"
+    style="
+        width:100%;
+        margin-bottom:14px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+    "
+    onclick="openMyHighlights()"
+>
+    <span>My Highlights</span>
+    <span style="opacity:.55;">›</span>
+</button>
         <div class="card">
 
             <div style="
@@ -2066,7 +2079,29 @@ textarea:focus,
     </div>
 
 </section>
+<!-- =======================================================
+     MY HIGHLIGHTS PAGE
+======================================================= -->
 
+<section id="highlights" class="page">
+
+    <div class="section-header">
+        <div class="eyebrow">Bible study</div>
+        <h1>My Highlights</h1>
+        <p>
+            Scripture you have highlighted while reading.
+        </p>
+    </div>
+
+    <div id="myHighlightsList">
+        <div class="card">
+            <p style="color:var(--muted); margin:0;">
+                Your highlighted verses will appear here.
+            </p>
+        </div>
+    </div>
+
+</section>
 
 <!-- =======================================================
      GROW PAGE
@@ -3909,7 +3944,142 @@ function showPage(pageId) {
     });
 
 }
+async function openMyHighlights() {
+    showPage("highlights");
+    await loadMyHighlights();
+}
+async function loadMyHighlights() {
+    const list =
+        document.getElementById("myHighlightsList");
 
+    if (!list) return;
+
+    list.innerHTML = `
+        <div class="card">
+            <p style="color:var(--muted); margin:0;">
+                Loading your highlights...
+            </p>
+        </div>
+    `;
+
+    if (!currentUser) {
+        list.innerHTML = `
+            <div class="card">
+                <p style="color:var(--muted); margin:0;">
+                    Sign in to view your highlights.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("bible_highlights")
+            .select("*")
+            .eq("user_id", currentUser.id)
+            .order("created_at", {
+                ascending: false
+            });
+
+    if (error) {
+        console.error(
+            "Could not load My Highlights:",
+            error
+        );
+
+        list.innerHTML = `
+            <div class="card">
+                <p style="color:var(--muted); margin:0;">
+                    We couldn't load your highlights yet.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        list.innerHTML = `
+            <div class="card">
+                <p style="color:var(--muted); margin:0;">
+                    You haven't highlighted any verses yet.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = data
+        .map((highlight) => {
+            return `
+                <button
+                    class="card"
+                    style="
+                        width:100%;
+                        text-align:left;
+                        margin-bottom:12px;
+                        cursor:pointer;
+                    "
+                    onclick="openSavedHighlight(
+                        '${highlight.book_name.replace(/'/g, "\\'")}',
+                        ${highlight.chapter},
+                        ${highlight.verse}
+                    )"
+                >
+                    <div
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:space-between;
+                            gap:12px;
+                        "
+                    >
+                        <div>
+                            <div class="card-title">
+                                ${highlight.book_name}
+                                ${highlight.chapter}:${highlight.verse}
+                            </div>
+
+                            <div
+                                style="
+                                    color:var(--muted);
+                                    font-size:14px;
+                                    margin-top:5px;
+                                    text-transform:uppercase;
+                                    letter-spacing:.08em;
+                                "
+                            >
+                                ${highlight.translation}
+                            </div>
+                        </div>
+
+                        <span
+                            style="
+                                width:14px;
+                                height:14px;
+                                border-radius:50%;
+                                background:${getBibleHighlightColor(highlight.color)};
+                                flex:none;
+                            "
+                        ></span>
+                    </div>
+                </button>
+            `;
+        })
+        .join("");
+}
+function getBibleHighlightColor(color) {
+    const colors = {
+        red: "#c96f6f",
+        orange: "#cf8b55",
+        yellow: "#c9aa57",
+        green: "#789b72",
+        blue: "#6f8fae",
+        purple: "#8d78a3"
+    };
+
+    return colors[color] || "#8f877f";
+}
 /* =========================================================
    FULL BIBLE READER
 ========================================================= */
