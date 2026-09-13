@@ -3983,8 +3983,7 @@ function backToChapters() {
 }
 
 
-function openBibleChapter(chapter) {
-
+async function openBibleChapter(chapter) {
     if (!selectedBibleBook) return;
 
     selectedBibleChapter = chapter;
@@ -3994,37 +3993,206 @@ function openBibleChapter(chapter) {
         chapter: chapter
     });
 
-    document.getElementById("bibleHomeView")
-        .style.display = "none";
+    document.getElementById("bibleHomeView").style.display = "none";
+    document.getElementById("bibleChapterView").style.display = "none";
+    document.getElementById("bibleReaderView").style.display = "block";
 
-    document.getElementById("bibleChapterView")
-        .style.display = "none";
-
-    document.getElementById("bibleReaderView")
-        .style.display = "block";
-
-    document.getElementById("readerChapterTitle")
-        .textContent =
+    document.getElementById("readerChapterTitle").textContent =
         `${selectedBibleBook.name} ${chapter}`;
 
-    document.getElementById("readerTranslation")
-        .textContent = "KJV";
+    const chapterText =
+        document.getElementById("bibleChapterText");
 
-    document.getElementById("bibleChapterText")
-        .innerHTML = `
+    chapterText.innerHTML = `
+        <p style="
+            color:var(--muted);
+            text-align:center;
+            padding:35px 10px;
+        ">
+            Loading ${selectedBibleBook.name} ${chapter}... 📖
+        </p>
+    `;
+
+    updateBibleChapterButtons();
+
+    const bookCodes = {
+        "Genesis": "GEN",
+        "Exodus": "EXO",
+        "Leviticus": "LEV",
+        "Numbers": "NUM",
+        "Deuteronomy": "DEU",
+        "Joshua": "JOS",
+        "Judges": "JDG",
+        "Ruth": "RUT",
+        "1 Samuel": "1SA",
+        "2 Samuel": "2SA",
+        "1 Kings": "1KI",
+        "2 Kings": "2KI",
+        "1 Chronicles": "1CH",
+        "2 Chronicles": "2CH",
+        "Ezra": "EZR",
+        "Nehemiah": "NEH",
+        "Esther": "EST",
+        "Job": "JOB",
+        "Psalms": "PSA",
+        "Proverbs": "PRO",
+        "Ecclesiastes": "ECC",
+        "Song of Solomon": "SNG",
+        "Isaiah": "ISA",
+        "Jeremiah": "JER",
+        "Lamentations": "LAM",
+        "Ezekiel": "EZK",
+        "Daniel": "DAN",
+        "Hosea": "HOS",
+        "Joel": "JOL",
+        "Amos": "AMO",
+        "Obadiah": "OBA",
+        "Jonah": "JON",
+        "Micah": "MIC",
+        "Nahum": "NAM",
+        "Habakkuk": "HAB",
+        "Zephaniah": "ZEP",
+        "Haggai": "HAG",
+        "Zechariah": "ZEC",
+        "Malachi": "MAL",
+
+        "Matthew": "MAT",
+        "Mark": "MRK",
+        "Luke": "LUK",
+        "John": "JHN",
+        "Acts": "ACT",
+        "Romans": "ROM",
+        "1 Corinthians": "1CO",
+        "2 Corinthians": "2CO",
+        "Galatians": "GAL",
+        "Ephesians": "EPH",
+        "Philippians": "PHP",
+        "Colossians": "COL",
+        "1 Thessalonians": "1TH",
+        "2 Thessalonians": "2TH",
+        "1 Timothy": "1TI",
+        "2 Timothy": "2TI",
+        "Titus": "TIT",
+        "Philemon": "PHM",
+        "Hebrews": "HEB",
+        "James": "JAS",
+        "1 Peter": "1PE",
+        "2 Peter": "2PE",
+        "1 John": "1JN",
+        "2 John": "2JN",
+        "3 John": "3JN",
+        "Jude": "JUD",
+        "Revelation": "REV"
+    };
+
+    try {
+        const translation =
+            document.getElementById("bibleTranslation").value;
+
+        const bibleListResponse = await fetch(
+            `${SUPABASE_URL}/functions/v1/get-bible-chapter?action=bibles`,
+            {
+                headers: {
+                    "apikey": SUPABASE_PUBLISHABLE_KEY,
+                    "Authorization":
+                        `Bearer ${currentSession?.access_token || SUPABASE_PUBLISHABLE_KEY}`
+                }
+            }
+        );
+
+        const bibleListData =
+            await bibleListResponse.json();
+
+        if (!bibleListResponse.ok) {
+            throw new Error(
+                bibleListData?.error ||
+                "Could not load Bible translations."
+            );
+        }
+
+        const translationNames = {
+            kjv: ["KJV", "King James"],
+            niv: ["NIV", "New International Version"],
+            nlt: ["NLT", "New Living Translation"]
+        };
+
+        const wantedNames =
+            translationNames[translation] || [translation];
+
+        const selectedBible =
+            bibleListData.data.find((bible) => {
+                const text =
+                    `${bible.name || ""} ${bible.abbreviation || ""}`
+                        .toLowerCase();
+
+                return wantedNames.some((name) =>
+                    text.includes(name.toLowerCase())
+                );
+            });
+
+        if (!selectedBible) {
+            throw new Error(
+                `The ${translation.toUpperCase()} translation was not found in your API.Bible account.`
+            );
+        }
+
+        const bookCode =
+            bookCodes[selectedBibleBook.name];
+
+        if (!bookCode) {
+            throw new Error(
+                "This Bible book could not be matched."
+            );
+        }
+
+        const chapterId =
+            `${bookCode}.${chapter}`;
+
+        const chapterResponse = await fetch(
+            `${SUPABASE_URL}/functions/v1/get-bible-chapter?action=chapter&bibleId=${encodeURIComponent(selectedBible.id)}&chapterId=${encodeURIComponent(chapterId)}`,
+            {
+                headers: {
+                    "apikey": SUPABASE_PUBLISHABLE_KEY,
+                    "Authorization":
+                        `Bearer ${currentSession?.access_token || SUPABASE_PUBLISHABLE_KEY}`
+                }
+            }
+        );
+
+        const chapterData =
+            await chapterResponse.json();
+
+        if (!chapterResponse.ok) {
+            throw new Error(
+                chapterData?.error ||
+                "Could not load this chapter."
+            );
+        }
+
+        document.getElementById("readerTranslation")
+            .textContent =
+            selectedBible.abbreviation ||
+            translation.toUpperCase();
+
+        chapterText.innerHTML =
+            chapterData.data.content;
+
+    } catch (error) {
+        console.error(error);
+
+        chapterText.innerHTML = `
             <p style="
                 color:var(--muted);
                 text-align:center;
                 padding:35px 10px;
                 line-height:1.7;
             ">
-                📖 ${selectedBibleBook.name} ${chapter}
+                We couldn't load this chapter yet. 🤎
                 <br><br>
-                Bible text connection comes in the next step.
+                ${error.message}
             </p>
         `;
-
-    updateBibleChapterButtons();
+    }
 
     window.scrollTo({
         top: 0,
