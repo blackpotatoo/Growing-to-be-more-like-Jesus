@@ -1547,6 +1547,261 @@ textarea:focus,
 <section id="bible" class="page">
 
     <div class="section-header">
+        <div class="eyebrow">The Word</div>
+        <h1>📖 Bible</h1>
+        <p>
+            Read Scripture one chapter at a time and come back
+            exactly where you left off.
+        </p>
+    </div>
+
+
+    <!-- BIBLE HOME -->
+    <div id="bibleHomeView">
+
+        <div class="card">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:12px;
+                flex-wrap:wrap;
+                margin-bottom:18px;
+            ">
+
+                <div>
+                    <div class="card-title" style="margin-bottom:4px;">
+                        Bible translation
+                    </div>
+
+                    <h2 style="margin:0;">
+                        Read the Bible
+                    </h2>
+                </div>
+
+
+                <select
+                    id="bibleTranslation"
+                    class="input"
+                    style="
+                        width:auto;
+                        min-width:115px;
+                        padding:11px 14px;
+                    "
+                >
+                    <option value="kjv">KJV</option>
+                </select>
+
+            </div>
+
+
+            <input
+                class="search"
+                id="bibleSearch"
+                type="search"
+                placeholder="Search John 3:16, Psalm 23, Romans 8..."
+            >
+
+            <button
+                class="btn btn-primary"
+                style="width:100%;margin-top:10px;"
+                onclick="searchFullBible()"
+            >
+                🔎 Search Bible
+            </button>
+
+        </div>
+
+
+        <!-- CONTINUE READING -->
+
+        <div
+            class="card"
+            id="continueReadingCard"
+            style="margin-top:18px;display:none;"
+        >
+
+            <div class="card-title">
+                📖 Continue reading
+            </div>
+
+            <h2 id="continueReadingTitle">
+                John 1
+            </h2>
+
+            <p id="continueReadingText">
+                Pick up where you left off.
+            </p>
+
+            <button
+                class="btn btn-green"
+                style="margin-top:16px;"
+                onclick="continueBibleReading()"
+            >
+                Continue →
+            </button>
+
+        </div>
+
+
+        <!-- BOOKS -->
+
+        <div class="card" style="margin-top:18px;">
+
+            <div class="card-title">
+                Books of the Bible
+            </div>
+
+            <h2>Old Testament</h2>
+
+            <div
+                id="oldTestamentBooks"
+                class="bible-book-grid"
+            ></div>
+
+
+            <h2 style="margin-top:30px;">
+                New Testament
+            </h2>
+
+            <div
+                id="newTestamentBooks"
+                class="bible-book-grid"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHAPTER PICKER -->
+
+    <div
+        id="bibleChapterView"
+        style="display:none;"
+    >
+
+        <button
+            class="btn btn-secondary"
+            onclick="showBibleHome()"
+            style="margin-bottom:16px;"
+        >
+            ← Books
+        </button>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Choose a chapter
+            </div>
+
+            <h2 id="chapterBookName">
+                Genesis
+            </h2>
+
+            <div
+                id="bibleChapterGrid"
+                class="bible-chapter-grid"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- READING SCREEN -->
+
+    <div
+        id="bibleReaderView"
+        style="display:none;"
+    >
+
+        <div class="bible-reader-header">
+
+            <button
+                class="btn btn-secondary"
+                onclick="backToChapters()"
+            >
+                ←
+            </button>
+
+
+            <div style="flex:1;">
+
+                <div
+                    class="card-title"
+                    id="readerTranslation"
+                    style="margin-bottom:3px;"
+                >
+                    KJV
+                </div>
+
+                <h2
+                    id="readerChapterTitle"
+                    style="margin:0;"
+                >
+                    John 3
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="card bible-reading-card"
+            style="margin-top:15px;"
+        >
+
+            <div id="bibleChapterText">
+
+                <p style="
+                    color:var(--muted);
+                    text-align:center;
+                    padding:25px 0;
+                ">
+                    Loading chapter...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                gap:10px;
+                margin-top:14px;
+            "
+        >
+
+            <button
+                id="previousChapterButton"
+                class="btn btn-secondary"
+                onclick="previousBibleChapter()"
+            >
+                ← Previous
+            </button>
+
+            <button
+                id="nextChapterButton"
+                class="btn btn-primary"
+                onclick="nextBibleChapter()"
+            >
+                Next →
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <div class="section-header">
 
         <div class="eyebrow">The Word</div>
 
@@ -3424,7 +3679,318 @@ function showPage(pageId) {
 
 }
 
+/* =========================================================
+   FULL BIBLE READER
+========================================================= */
 
+const bibleBooks = [
+    // OLD TESTAMENT
+    { name: "Genesis", chapters: 50, testament: "old" },
+    { name: "Exodus", chapters: 40, testament: "old" },
+    { name: "Leviticus", chapters: 27, testament: "old" },
+    { name: "Numbers", chapters: 36, testament: "old" },
+    { name: "Deuteronomy", chapters: 34, testament: "old" },
+    { name: "Joshua", chapters: 24, testament: "old" },
+    { name: "Judges", chapters: 21, testament: "old" },
+    { name: "Ruth", chapters: 4, testament: "old" },
+    { name: "1 Samuel", chapters: 31, testament: "old" },
+    { name: "2 Samuel", chapters: 24, testament: "old" },
+    { name: "1 Kings", chapters: 22, testament: "old" },
+    { name: "2 Kings", chapters: 25, testament: "old" },
+    { name: "1 Chronicles", chapters: 29, testament: "old" },
+    { name: "2 Chronicles", chapters: 36, testament: "old" },
+    { name: "Ezra", chapters: 10, testament: "old" },
+    { name: "Nehemiah", chapters: 13, testament: "old" },
+    { name: "Esther", chapters: 10, testament: "old" },
+    { name: "Job", chapters: 42, testament: "old" },
+    { name: "Psalms", chapters: 150, testament: "old" },
+    { name: "Proverbs", chapters: 31, testament: "old" },
+    { name: "Ecclesiastes", chapters: 12, testament: "old" },
+    { name: "Song of Solomon", chapters: 8, testament: "old" },
+    { name: "Isaiah", chapters: 66, testament: "old" },
+    { name: "Jeremiah", chapters: 52, testament: "old" },
+    { name: "Lamentations", chapters: 5, testament: "old" },
+    { name: "Ezekiel", chapters: 48, testament: "old" },
+    { name: "Daniel", chapters: 12, testament: "old" },
+    { name: "Hosea", chapters: 14, testament: "old" },
+    { name: "Joel", chapters: 3, testament: "old" },
+    { name: "Amos", chapters: 9, testament: "old" },
+    { name: "Obadiah", chapters: 1, testament: "old" },
+    { name: "Jonah", chapters: 4, testament: "old" },
+    { name: "Micah", chapters: 7, testament: "old" },
+    { name: "Nahum", chapters: 3, testament: "old" },
+    { name: "Habakkuk", chapters: 3, testament: "old" },
+    { name: "Zephaniah", chapters: 3, testament: "old" },
+    { name: "Haggai", chapters: 2, testament: "old" },
+    { name: "Zechariah", chapters: 14, testament: "old" },
+    { name: "Malachi", chapters: 4, testament: "old" },
+
+    // NEW TESTAMENT
+    { name: "Matthew", chapters: 28, testament: "new" },
+    { name: "Mark", chapters: 16, testament: "new" },
+    { name: "Luke", chapters: 24, testament: "new" },
+    { name: "John", chapters: 21, testament: "new" },
+    { name: "Acts", chapters: 28, testament: "new" },
+    { name: "Romans", chapters: 16, testament: "new" },
+    { name: "1 Corinthians", chapters: 16, testament: "new" },
+    { name: "2 Corinthians", chapters: 13, testament: "new" },
+    { name: "Galatians", chapters: 6, testament: "new" },
+    { name: "Ephesians", chapters: 6, testament: "new" },
+    { name: "Philippians", chapters: 4, testament: "new" },
+    { name: "Colossians", chapters: 4, testament: "new" },
+    { name: "1 Thessalonians", chapters: 5, testament: "new" },
+    { name: "2 Thessalonians", chapters: 3, testament: "new" },
+    { name: "1 Timothy", chapters: 6, testament: "new" },
+    { name: "2 Timothy", chapters: 4, testament: "new" },
+    { name: "Titus", chapters: 3, testament: "new" },
+    { name: "Philemon", chapters: 1, testament: "new" },
+    { name: "Hebrews", chapters: 13, testament: "new" },
+    { name: "James", chapters: 5, testament: "new" },
+    { name: "1 Peter", chapters: 5, testament: "new" },
+    { name: "2 Peter", chapters: 3, testament: "new" },
+    { name: "1 John", chapters: 5, testament: "new" },
+    { name: "2 John", chapters: 1, testament: "new" },
+    { name: "3 John", chapters: 1, testament: "new" },
+    { name: "Jude", chapters: 1, testament: "new" },
+    { name: "Revelation", chapters: 22, testament: "new" }
+];
+
+let selectedBibleBook = null;
+let selectedBibleChapter = null;
+
+
+function initializeBibleReader() {
+
+    const oldBooks =
+        bibleBooks.filter(book => book.testament === "old");
+
+    const newBooks =
+        bibleBooks.filter(book => book.testament === "new");
+
+    document.getElementById("oldTestamentBooks").innerHTML =
+        oldBooks.map(book => `
+            <button
+                class="bible-book-button"
+                onclick="openBibleBook('${book.name.replace(/'/g, "\\'")}')"
+            >
+                ${book.name}
+            </button>
+        `).join("");
+
+
+    document.getElementById("newTestamentBooks").innerHTML =
+        newBooks.map(book => `
+            <button
+                class="bible-book-button"
+                onclick="openBibleBook('${book.name.replace(/'/g, "\\'")}')"
+            >
+                ${book.name}
+            </button>
+        `).join("");
+
+
+    const lastReading =
+        getData("lastBibleReading", null);
+
+    if (lastReading) {
+
+        document.getElementById("continueReadingCard")
+            .style.display = "block";
+
+        document.getElementById("continueReadingTitle")
+            .textContent =
+            `${lastReading.book} ${lastReading.chapter}`;
+    }
+}
+
+
+function openBibleBook(bookName) {
+
+    const book =
+        bibleBooks.find(book => book.name === bookName);
+
+    if (!book) return;
+
+    selectedBibleBook = book;
+
+    document.getElementById("bibleHomeView")
+        .style.display = "none";
+
+    document.getElementById("bibleReaderView")
+        .style.display = "none";
+
+    document.getElementById("bibleChapterView")
+        .style.display = "block";
+
+    document.getElementById("chapterBookName")
+        .textContent = book.name;
+
+
+    const chapterButtons = [];
+
+    for (
+        let chapter = 1;
+        chapter <= book.chapters;
+        chapter++
+    ) {
+
+        chapterButtons.push(`
+            <button
+                class="bible-chapter-button"
+                onclick="openBibleChapter(${chapter})"
+            >
+                ${chapter}
+            </button>
+        `);
+    }
+
+    document.getElementById("bibleChapterGrid")
+        .innerHTML = chapterButtons.join("");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+function showBibleHome() {
+
+    document.getElementById("bibleHomeView")
+        .style.display = "block";
+
+    document.getElementById("bibleChapterView")
+        .style.display = "none";
+
+    document.getElementById("bibleReaderView")
+        .style.display = "none";
+}
+
+
+function backToChapters() {
+
+    if (!selectedBibleBook) {
+        showBibleHome();
+        return;
+    }
+
+    openBibleBook(selectedBibleBook.name);
+}
+
+
+function openBibleChapter(chapter) {
+
+    if (!selectedBibleBook) return;
+
+    selectedBibleChapter = chapter;
+
+    setData("lastBibleReading", {
+        book: selectedBibleBook.name,
+        chapter: chapter
+    });
+
+    document.getElementById("bibleHomeView")
+        .style.display = "none";
+
+    document.getElementById("bibleChapterView")
+        .style.display = "none";
+
+    document.getElementById("bibleReaderView")
+        .style.display = "block";
+
+    document.getElementById("readerChapterTitle")
+        .textContent =
+        `${selectedBibleBook.name} ${chapter}`;
+
+    document.getElementById("readerTranslation")
+        .textContent = "KJV";
+
+    document.getElementById("bibleChapterText")
+        .innerHTML = `
+            <p style="
+                color:var(--muted);
+                text-align:center;
+                padding:35px 10px;
+                line-height:1.7;
+            ">
+                📖 ${selectedBibleBook.name} ${chapter}
+                <br><br>
+                Bible text connection comes in the next step.
+            </p>
+        `;
+
+    updateBibleChapterButtons();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+function previousBibleChapter() {
+
+    if (!selectedBibleBook || !selectedBibleChapter) return;
+
+    if (selectedBibleChapter > 1) {
+        openBibleChapter(selectedBibleChapter - 1);
+    }
+}
+
+
+function nextBibleChapter() {
+
+    if (!selectedBibleBook || !selectedBibleChapter) return;
+
+    if (selectedBibleChapter < selectedBibleBook.chapters) {
+        openBibleChapter(selectedBibleChapter + 1);
+    }
+}
+
+
+function updateBibleChapterButtons() {
+
+    const previousButton =
+        document.getElementById("previousChapterButton");
+
+    const nextButton =
+        document.getElementById("nextChapterButton");
+
+    previousButton.disabled =
+        selectedBibleChapter <= 1;
+
+    nextButton.disabled =
+        selectedBibleChapter >= selectedBibleBook.chapters;
+}
+
+
+function continueBibleReading() {
+
+    const lastReading =
+        getData("lastBibleReading", null);
+
+    if (!lastReading) return;
+
+    openBibleBook(lastReading.book);
+    openBibleChapter(lastReading.chapter);
+}
+
+
+function searchFullBible() {
+
+    const input =
+        document.getElementById("bibleSearch");
+
+    const query =
+        input.value.trim();
+
+    if (!query) {
+        showToast("Type a Bible reference first 📖");
+        return;
+    }
+
+    showToast("Bible search is coming in the next step 🔎");
+}
 /* =========================================================
    BIBLE SEARCH
 ========================================================= */
@@ -5303,7 +5869,7 @@ function initializeApp() {
 
     updateStreak();
 
-    displayBiblePassages();
+    initializeBibleReader();
 
     renderJournal();
 
