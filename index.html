@@ -4249,8 +4249,7 @@ function continueBibleReading() {
 }
 
 
-function searchFullBible() {
-
+async function searchFullBible() {
     const input =
         document.getElementById("bibleSearch");
 
@@ -4262,7 +4261,228 @@ function searchFullBible() {
         return;
     }
 
-    showToast("Bible search is coming in the next step 🔎");
+    const bookAliases = {
+        "gen": "Genesis",
+        "genesis": "Genesis",
+
+        "exo": "Exodus",
+        "exodus": "Exodus",
+
+        "lev": "Leviticus",
+        "leviticus": "Leviticus",
+
+        "num": "Numbers",
+        "numbers": "Numbers",
+
+        "deut": "Deuteronomy",
+        "deuteronomy": "Deuteronomy",
+
+        "josh": "Joshua",
+        "joshua": "Joshua",
+
+        "judg": "Judges",
+        "judges": "Judges",
+
+        "ruth": "Ruth",
+
+        "1 sam": "1 Samuel",
+        "1 samuel": "1 Samuel",
+        "2 sam": "2 Samuel",
+        "2 samuel": "2 Samuel",
+
+        "1 kings": "1 Kings",
+        "2 kings": "2 Kings",
+
+        "1 chron": "1 Chronicles",
+        "1 chronicles": "1 Chronicles",
+        "2 chron": "2 Chronicles",
+        "2 chronicles": "2 Chronicles",
+
+        "ezra": "Ezra",
+        "neh": "Nehemiah",
+        "nehemiah": "Nehemiah",
+        "esther": "Esther",
+        "job": "Job",
+
+        "ps": "Psalms",
+        "psalm": "Psalms",
+        "psalms": "Psalms",
+
+        "prov": "Proverbs",
+        "proverbs": "Proverbs",
+
+        "eccl": "Ecclesiastes",
+        "ecclesiastes": "Ecclesiastes",
+
+        "song": "Song of Solomon",
+        "song of solomon": "Song of Solomon",
+
+        "isa": "Isaiah",
+        "isaiah": "Isaiah",
+
+        "jer": "Jeremiah",
+        "jeremiah": "Jeremiah",
+
+        "lam": "Lamentations",
+        "lamentations": "Lamentations",
+
+        "ezek": "Ezekiel",
+        "ezekiel": "Ezekiel",
+
+        "dan": "Daniel",
+        "daniel": "Daniel",
+
+        "hosea": "Hosea",
+        "joel": "Joel",
+        "amos": "Amos",
+        "obadiah": "Obadiah",
+        "jonah": "Jonah",
+        "micah": "Micah",
+        "nahum": "Nahum",
+        "habakkuk": "Habakkuk",
+        "zephaniah": "Zephaniah",
+        "haggai": "Haggai",
+        "zechariah": "Zechariah",
+        "malachi": "Malachi",
+
+        "matt": "Matthew",
+        "matthew": "Matthew",
+
+        "mark": "Mark",
+
+        "luke": "Luke",
+
+        "john": "John",
+
+        "acts": "Acts",
+
+        "rom": "Romans",
+        "romans": "Romans",
+
+        "1 cor": "1 Corinthians",
+        "1 corinthians": "1 Corinthians",
+        "2 cor": "2 Corinthians",
+        "2 corinthians": "2 Corinthians",
+
+        "gal": "Galatians",
+        "galatians": "Galatians",
+
+        "eph": "Ephesians",
+        "ephesians": "Ephesians",
+
+        "phil": "Philippians",
+        "philippians": "Philippians",
+
+        "col": "Colossians",
+        "colossians": "Colossians",
+
+        "1 thess": "1 Thessalonians",
+        "1 thessalonians": "1 Thessalonians",
+        "2 thess": "2 Thessalonians",
+        "2 thessalonians": "2 Thessalonians",
+
+        "1 tim": "1 Timothy",
+        "1 timothy": "1 Timothy",
+        "2 tim": "2 Timothy",
+        "2 timothy": "2 Timothy",
+
+        "titus": "Titus",
+        "philemon": "Philemon",
+
+        "heb": "Hebrews",
+        "hebrews": "Hebrews",
+
+        "james": "James",
+
+        "1 peter": "1 Peter",
+        "2 peter": "2 Peter",
+
+        "1 john": "1 John",
+        "2 john": "2 John",
+        "3 john": "3 John",
+
+        "jude": "Jude",
+
+        "rev": "Revelation",
+        "revelation": "Revelation"
+    };
+
+    const cleanedQuery =
+        query
+            .replace(/\s+/g, " ")
+            .trim();
+
+    const match =
+        cleanedQuery.match(
+            /^(.+?)\s+(\d+)(?::(\d+)(?:-(\d+))?)?$/
+        );
+
+    if (!match) {
+        showToast(
+            "Try a reference like John 3:16 or Psalm 23 📖"
+        );
+        return;
+    }
+
+    const typedBook =
+        match[1]
+            .toLowerCase()
+            .replace(/\./g, "")
+            .trim();
+
+    const chapter =
+        parseInt(match[2], 10);
+
+    const verseStart =
+        match[3]
+            ? parseInt(match[3], 10)
+            : null;
+
+    const verseEnd =
+        match[4]
+            ? parseInt(match[4], 10)
+            : verseStart;
+
+    const bookName =
+        bookAliases[typedBook];
+
+    if (!bookName) {
+        showToast(
+            "I couldn't recognize that Bible book 🤎"
+        );
+        return;
+    }
+
+    const book =
+        bibleBooks.find(
+            item => item.name === bookName
+        );
+
+    if (!book) {
+        showToast(
+            "That Bible book isn't available yet."
+        );
+        return;
+    }
+
+    if (
+        chapter < 1 ||
+        chapter > book.chapters
+    ) {
+        showToast(
+            `${bookName} has ${book.chapters} chapters 📖`
+        );
+        return;
+    }
+
+    selectedBibleBook = book;
+
+    window.pendingBibleVerse = {
+        start: verseStart,
+        end: verseEnd
+    };
+
+    await openBibleChapter(chapter);
 }
 /* =========================================================
    BIBLE SEARCH
