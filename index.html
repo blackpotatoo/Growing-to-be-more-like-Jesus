@@ -4837,7 +4837,7 @@ chapterText
     hideBibleHighlightToolbar();
 }
 
-function removeBibleHighlight() {
+async function removeBibleHighlight() {
     if (!selectedBibleVerseElement || !selectedBibleVerseForTools) {
         return;
     }
@@ -4869,7 +4869,33 @@ function removeBibleHighlight() {
 
         delete verseText.dataset.highlightColor;
     }
+if (
+    currentUser &&
+    activeBibleId &&
+    selectedBibleBook &&
+    selectedBibleChapter
+) {
+    const { error } =
+        await supabaseClient
+            .from("bible_highlights")
+            .delete()
+            .eq("user_id", currentUser.id)
+            .eq("bible_id", activeBibleId)
+            .eq("book_name", selectedBibleBook.name)
+            .eq("chapter", selectedBibleChapter)
+            .eq("verse", verseNumber);
 
+    if (error) {
+        console.error(
+            "Could not delete Bible highlight:",
+            error
+        );
+
+        showToast(
+            "Couldn't fully remove this highlight."
+        );
+    }
+}
     hideBibleHighlightToolbar();
 }
 
