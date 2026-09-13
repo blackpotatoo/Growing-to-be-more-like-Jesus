@@ -3944,10 +3944,13 @@ function showPage(pageId) {
     });
 
 }
+let myHighlightsFilter = "all";
+
 async function openMyHighlights() {
     showPage("highlights");
     await loadMyHighlights();
 }
+
 async function loadMyHighlights() {
     const list =
         document.getElementById("myHighlightsList");
@@ -3956,7 +3959,7 @@ async function loadMyHighlights() {
 
     list.innerHTML = `
         <div class="card">
-            <p style="color:var(--muted); margin:0;">
+            <p style="color:var(--muted);margin:0;">
                 Loading your highlights...
             </p>
         </div>
@@ -3965,7 +3968,7 @@ async function loadMyHighlights() {
     if (!currentUser) {
         list.innerHTML = `
             <div class="card">
-                <p style="color:var(--muted); margin:0;">
+                <p style="color:var(--muted);margin:0;">
                     Sign in to view your highlights.
                 </p>
             </div>
@@ -3990,7 +3993,7 @@ async function loadMyHighlights() {
 
         list.innerHTML = `
             <div class="card">
-                <p style="color:var(--muted); margin:0;">
+                <p style="color:var(--muted);margin:0;">
                     We couldn't load your highlights yet.
                 </p>
             </div>
@@ -3998,76 +4001,121 @@ async function loadMyHighlights() {
         return;
     }
 
-    if (!data || data.length === 0) {
+    renderMyHighlights(data || []);
+}
+
+function renderMyHighlights(highlights) {
+    const list =
+        document.getElementById("myHighlightsList");
+
+    if (!list) return;
+
+    const colors = [
+        "all",
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "purple"
+    ];
+
+    const filtered =
+        myHighlightsFilter === "all"
+            ? highlights
+            : highlights.filter(
+                item =>
+                    item.color === myHighlightsFilter
+            );
+
+    const filtersHTML = `
+        <div class="highlight-filter-row">
+            ${colors.map(color => `
+                <button
+                    class="highlight-filter ${
+                        myHighlightsFilter === color
+                            ? "active"
+                            : ""
+                    }"
+                    onclick="setMyHighlightsFilter('${color}')"
+                >
+                    ${
+                        color === "all"
+                            ? "All"
+                            : `<span
+                                class="highlight-filter-dot"
+                                style="
+                                    background:
+                                    ${getBibleHighlightColor(color)}
+                                "
+                            ></span>`
+                    }
+                </button>
+            `).join("")}
+        </div>
+    `;
+
+    if (filtered.length === 0) {
         list.innerHTML = `
+            ${filtersHTML}
+
             <div class="card">
-                <p style="color:var(--muted); margin:0;">
-                    You haven't highlighted any verses yet.
+                <p style="color:var(--muted);margin:0;">
+                    ${
+                        myHighlightsFilter === "all"
+                            ? "You haven't highlighted any verses yet."
+                            : "No highlights in this colour yet."
+                    }
                 </p>
             </div>
         `;
         return;
     }
 
-    list.innerHTML = data
-        .map((highlight) => {
-            return `
-                <button
-                    class="card"
+    list.innerHTML = `
+        ${filtersHTML}
+
+        ${filtered.map(highlight => `
+            <button
+                class="highlight-library-item"
+                onclick="openSavedHighlight(
+                    '${highlight.book_name.replace(/'/g, "\\'")}',
+                    ${highlight.chapter},
+                    ${highlight.verse}
+                )"
+            >
+                <span
+                    class="highlight-library-color"
                     style="
-                        width:100%;
-                        text-align:left;
-                        margin-bottom:12px;
-                        cursor:pointer;
+                        background:
+                        ${getBibleHighlightColor(highlight.color)}
                     "
-                    onclick="openSavedHighlight(
-                        '${highlight.book_name.replace(/'/g, "\\'")}',
-                        ${highlight.chapter},
-                        ${highlight.verse}
-                    )"
-                >
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:space-between;
-                            gap:12px;
-                        "
-                    >
-                        <div>
-                            <div class="card-title">
-                                ${highlight.book_name}
-                                ${highlight.chapter}:${highlight.verse}
-                            </div>
+                ></span>
 
-                            <div
-                                style="
-                                    color:var(--muted);
-                                    font-size:14px;
-                                    margin-top:5px;
-                                    text-transform:uppercase;
-                                    letter-spacing:.08em;
-                                "
-                            >
-                                ${highlight.translation}
-                            </div>
-                        </div>
+                <span class="highlight-library-main">
+                    <strong>
+                        ${highlight.book_name}
+                        ${highlight.chapter}:${highlight.verse}
+                    </strong>
 
-                        <span
-                            style="
-                                width:14px;
-                                height:14px;
-                                border-radius:50%;
-                                background:${getBibleHighlightColor(highlight.color)};
-                                flex:none;
-                            "
-                        ></span>
-                    </div>
-                </button>
-            `;
-        })
-        .join("");
+                    <small>
+                        ${highlight.translation.toUpperCase()}
+                    </small>
+                </span>
+
+                <span class="highlight-library-arrow">
+                    ›
+                </span>
+            </button>
+        `).join("")}
+    `;
 }
+
+async function setMyHighlightsFilter(color) {
+    myHighlightsFilter = color;
+    await loadMyHighlights();
+}
+
 function getBibleHighlightColor(color) {
     const colors = {
         red: "#c96f6f",
@@ -4079,6 +4127,44 @@ function getBibleHighlightColor(color) {
     };
 
     return colors[color] || "#8f877f";
+}
+
+async function openSavedHighlight(
+    bookName,
+    chapter,
+    verse
+) {
+    const book =
+        bibleBooks.find(
+            item => item.name === bookName
+        );
+
+    if (!book) return;
+
+    selectedBibleBook = book;
+
+    showPage("bible");
+
+    await openBibleChapter(chapter);
+
+    setTimeout(() => {
+        const chapterText =
+            document.getElementById(
+                "bibleChapterText"
+            );
+
+        const verseElement =
+            chapterText?.querySelector(
+                `.v[data-verse-number="${verse}"]`
+            );
+
+        if (verseElement) {
+            verseElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        }
+    }, 120);
 }
 /* =========================================================
    FULL BIBLE READER
