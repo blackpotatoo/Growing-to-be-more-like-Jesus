@@ -1914,7 +1914,57 @@ textarea:focus,
 ======================================================= -->
 
 <section id="shared" class="page">
+    <!-- SUPABASE ACCOUNT AREA -->
+    <div id="authSection" class="card" style="margin-bottom:18px;">
 
+        <div class="card-title">🔐 Your account</div>
+
+        <h2>Welcome to Our Space</h2>
+
+        <p>
+            Sign up or sign in to connect with friends and have
+            private conversations.
+        </p>
+
+        <div class="form-stack" style="margin-top:18px;">
+
+            <input
+                class="input"
+                id="authEmail"
+                type="email"
+                placeholder="Email address"
+                autocomplete="email"
+            >
+
+            <input
+                class="input"
+                id="authPassword"
+                type="password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                <button
+                    class="btn btn-primary"
+                    onclick="signUp()">
+                    Create account
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="signIn()">
+                    Sign in
+                </button>
+
+            </div>
+
+        </div>
+
+        <p id="authMessage" style="margin-top:14px;"></p>
+
+    </div>
     <div id="ourSpaceHub" class="our-space-view">
 
         <div class="section-header">
@@ -2174,6 +2224,61 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
+/* =========================================================
+   SUPABASE AUTHENTICATION
+========================================================= */
+
+async function signUp() {
+    const email = document.getElementById("authEmail").value.trim();
+    const password = document.getElementById("authPassword").value;
+    const message = document.getElementById("authMessage");
+
+    if (!email || !password) {
+        message.textContent = "Please enter your email and password.";
+        return;
+    }
+
+    message.textContent = "Creating your account...";
+
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent =
+        "Account created! Check your email to confirm your account. 🤎";
+}
+
+async function signIn() {
+    const email = document.getElementById("authEmail").value.trim();
+    const password = document.getElementById("authPassword").value;
+    const message = document.getElementById("authMessage");
+
+    if (!email || !password) {
+        message.textContent = "Please enter your email and password.";
+        return;
+    }
+
+    message.textContent = "Signing you in...";
+
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent = "Signed in successfully! 🤎";
+}
 /* =========================================================
    DAILY VERSES
    KJV — public domain
