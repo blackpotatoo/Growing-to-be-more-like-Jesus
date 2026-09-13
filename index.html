@@ -447,6 +447,7 @@ main {
     border-radius: inherit;
     transition: width .8s ease;
 }
+}
 
 .progress-row {
     display: flex;
@@ -745,7 +746,11 @@ textarea:focus,
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: linear-gradient(135deg, rgba(217,170,91,.25), rgba(127,155,114,.18));
+    background: linear-gradient(
+        135deg,
+        rgba(217,170,91,.25),
+        rgba(127,155,114,.18)
+    );
     border: 1px solid rgba(217,170,91,.18);
     font-weight: 850;
     color: var(--gold-light);
@@ -871,7 +876,6 @@ textarea:focus,
     color: var(--muted);
     font-size: 13px;
 }
-
 .chat-shell {
     display: flex;
     flex-direction: column;
@@ -993,6 +997,83 @@ textarea:focus,
 
     .chat-shell {
         min-height: 430px;
+    }
+}
+
+/* =========================================================
+   OUR SPACE — REAL ACCOUNT / FRIEND STATES
+========================================================= */
+
+.auth-note {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.account-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.account-email {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+    overflow-wrap: anywhere;
+}
+
+.request-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.request-card {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.025);
+    border-radius: 17px;
+}
+
+.request-card-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.request-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(217,170,91,.2);
+    background: rgba(217,170,91,.07);
+    color: var(--gold-light);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+@media (max-width: 700px) {
+    .request-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .request-actions,
+    .request-actions .btn {
+        width: 100%;
     }
 }
 
@@ -1236,9 +1317,7 @@ textarea:focus,
         <div class="date-line" id="todayDate"></div>
 
     </div>
-
-
-    <div class="grid">
+       <div class="grid">
 
         <div class="col-8">
 
@@ -1907,27 +1986,24 @@ textarea:focus,
     </div>
 
 </section>
-
-
 <!-- =======================================================
      OUR SPACE
 ======================================================= -->
 
 <section id="shared" class="page">
-    <!-- SUPABASE ACCOUNT AREA -->
+
+    <!-- SIGNED-OUT ACCOUNT AREA -->
     <div id="authSection" class="card" style="margin-bottom:18px;">
 
         <div class="card-title">🔐 Your account</div>
-
         <h2>Welcome to Our Space</h2>
 
         <p>
-            Sign up or sign in to connect with friends and have
-            private conversations.
+            Create an account or sign in to add friends and have
+            private conversations across devices.
         </p>
 
         <div class="form-stack" style="margin-top:18px;">
-
             <input
                 class="input"
                 id="authEmail"
@@ -1945,210 +2021,199 @@ textarea:focus,
             >
 
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-
-                <button
-                    class="btn btn-primary"
-                    onclick="signUp()">
+                <button class="btn btn-primary" onclick="signUp()">
                     Create account
                 </button>
 
-                <button
-                    class="btn btn-secondary"
-                    onclick="signIn()">
+                <button class="btn btn-secondary" onclick="signIn()">
                     Sign in
                 </button>
-
             </div>
 
+            <button class="btn btn-secondary" onclick="resendConfirmation()">
+                Resend confirmation email
+            </button>
         </div>
 
-        <p id="authMessage" style="margin-top:14px;"></p>
-
+        <p id="authMessage" class="auth-note"></p>
     </div>
-    <div id="ourSpaceHub" class="our-space-view">
 
-        <div class="section-header">
+    <!-- EVERYTHING BELOW IS SHOWN AFTER SIGN-IN -->
+    <div id="memberSection" style="display:none;">
 
-            <div class="eyebrow">Grow together</div>
+        <div class="card" style="margin-bottom:18px;">
+            <div class="account-row">
+                <div>
+                    <div class="card-title" style="margin-bottom:5px;">✓ Signed in</div>
+                    <div style="font-weight:800;" id="signedInUsername">Your account</div>
+                    <div class="account-email" id="signedInEmail"></div>
+                </div>
 
-            <h1>👥 Our Space</h1>
-
-            <p>
-                A private place to grow, talk, pray and encourage one another.
-                Add friends, then choose exactly who you want to talk with.
-            </p>
-
-            <div class="space-status">
-                ✦ Account connection comes next
+                <button class="btn btn-secondary" onclick="signOut()">
+                    Sign out
+                </button>
             </div>
-
         </div>
 
-        <div class="grid">
+        <div id="ourSpaceHub" class="our-space-view">
 
-            <div class="col-6">
+            <div class="section-header">
+                <div class="eyebrow">Grow together</div>
+                <h1>👥 Our Space</h1>
+                <p>
+                    A private place to grow, talk, pray and encourage one another.
+                    Add friends by username, then choose exactly who you want to talk with.
+                </p>
 
-                <div class="card">
+                <div class="space-status" id="spaceStatus">
+                    ✦ Connected securely to your account
+                </div>
+            </div>
 
-                    <div class="card-title">👤 Your profile</div>
+            <div class="grid">
 
-                    <h2>Choose your username</h2>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-title">👤 Your profile</div>
+                        <h2>Your username</h2>
+                        <p>
+                            This is the name people use to find you. Usernames can use
+                            letters, numbers and underscores.
+                        </p>
 
-                    <p>
-                        This is the name your friends will see in Our Space.
-                        Usernames can use letters, numbers and underscores.
-                    </p>
-
-                    <div class="space-stack">
-
-                        <div class="profile-preview">
-                            <div class="profile-avatar" id="profileAvatar">YOU</div>
-                            <div>
-                                <div class="profile-name" id="profileName">Your username</div>
-                                <div class="profile-sub">Your Growing to be More Like Jesus profile</div>
+                        <div class="space-stack">
+                            <div class="profile-preview">
+                                <div class="profile-avatar" id="profileAvatar">YOU</div>
+                                <div>
+                                    <div class="profile-name" id="profileName">Choose a username</div>
+                                    <div class="profile-sub">Your Growing to be More Like Jesus profile</div>
+                                </div>
                             </div>
+
+                            <input
+                                class="input"
+                                id="usernameInput"
+                                type="text"
+                                maxlength="20"
+                                autocomplete="off"
+                                placeholder="Choose a username..."
+                            >
+
+                            <button class="btn btn-primary" id="saveUsernameButton" onclick="saveUsername()">
+                                Save username
+                            </button>
                         </div>
 
-                        <input
-                            class="input"
-                            id="usernameInput"
-                            type="text"
-                            maxlength="20"
-                            autocomplete="off"
-                            placeholder="Choose a username..."
-                        >
-
-                        <button class="btn btn-primary" onclick="previewUsername()">
-                            Save username preview
-                        </button>
-
+                        <div class="space-note" id="profileNote">
+                            Choose a unique username before adding friends.
+                        </div>
                     </div>
+                </div>
 
-                    <div class="space-note">
-                        For now this preview is saved only on this device. In the next step,
-                        we'll connect it to your Supabase account so it saves properly.
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-title">🤝 Add a friend</div>
+                        <h2>Find someone by username</h2>
+                        <p>
+                            Enter their exact username. They will receive a request and
+                            can accept or decline it from their own account.
+                        </p>
+
+                        <div class="friend-row" style="margin-top:18px;">
+                            <input
+                                class="input"
+                                id="friendUsernameInput"
+                                type="text"
+                                maxlength="20"
+                                autocomplete="off"
+                                placeholder="Friend's username..."
+                            >
+
+                            <button class="btn btn-green" onclick="sendFriendRequest()">
+                                Add friend
+                            </button>
+                        </div>
+
+                        <div id="friendRequestMessage" class="space-note"></div>
                     </div>
-
                 </div>
 
             </div>
 
-            <div class="col-6">
-
-                <div class="card">
-
-                    <div class="card-title">🤝 Add a friend</div>
-
-                    <h2>Build your circle</h2>
-
-                    <p>
-                        Once accounts are connected, you'll be able to find people by username,
-                        send a request and keep a separate private conversation with each friend.
-                    </p>
-
-                    <div class="friend-row" style="margin-top:18px;">
-                        <input
-                            class="input"
-                            id="friendUsernameInput"
-                            type="text"
-                            maxlength="20"
-                            autocomplete="off"
-                            placeholder="Friend's username..."
-                        >
-
-                        <button class="btn btn-green" onclick="previewFriendRequest()">
-                            Add friend
-                        </button>
+            <div class="grid" style="margin-top:18px;">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-title">📩 Friend requests</div>
+                        <h2>Requests for you</h2>
+                        <div class="request-list" id="incomingRequests"></div>
                     </div>
-
-                    <div id="friendPreview" class="space-stack"></div>
-
-                    <div class="space-note">
-                        Real friend requests will be private and tied to signed-in accounts.
-                    </div>
-
                 </div>
 
-            </div>
-
-        </div>
-
-        <div class="card" style="margin-top:18px;">
-
-            <div class="card-title">💬 Your chats</div>
-
-            <h2>Choose a friend</h2>
-
-            <p>
-                Each friend gets their own private chat. Tap a name to open that conversation.
-            </p>
-
-            <div class="friends-panel" id="friendsList"></div>
-
-            <div class="space-note">
-                Your chat list starts empty. A name only appears here after you add that username.
-                When Supabase is connected, this list will come from your real accepted friends.
-            </div>
-
-        </div>
-
-        <div class="card" style="margin-top:18px;">
-
-            <div class="card-title">🤝 This week's challenge</div>
-
-            <h2>Encourage someone.</h2>
-
-            <p>
-                Send someone a kind message, pray for them,
-                or simply let them know you're grateful for them.
-            </p>
-
-            <button
-                class="btn btn-green"
-                style="margin-top:18px;"
-                onclick="completeChallenge()">
-                Challenge completed ✓
-            </button>
-
-        </div>
-
-    </div>
-
-    <div id="ourSpaceChat" class="our-space-view hidden">
-
-        <div class="chat-page-header">
-            <button class="chat-back" onclick="closeFriendChat()" aria-label="Back to friends">←</button>
-            <div class="chat-avatar" id="activeChatAvatar">👤</div>
-            <div class="chat-page-title">
-                <h2 id="activeChatName">Friend</h2>
-                <p>Private conversation • preview mode</p>
-            </div>
-        </div>
-
-        <div class="card chat-shell">
-
-            <div class="chat-top">
-                <div>
-                    <div class="chat-name" id="activeChatHeader">Private chat</div>
-                    <div class="chat-presence">Only you and this friend will see this conversation</div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-title">📤 Sent requests</div>
+                        <h2>Waiting for a response</h2>
+                        <div class="request-list" id="outgoingRequests"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="chat-messages" id="chatMessages"></div>
+            <div class="card" style="margin-top:18px;">
+                <div class="card-title">💬 Your chats</div>
+                <h2>Choose a friend</h2>
+                <p>
+                    Only accepted friends appear here. Each friend has their own
+                    separate private conversation.
+                </p>
 
-            <div class="chat-compose">
-                <textarea id="chatInput" placeholder="Write a message..."></textarea>
+                <div class="friends-panel" id="friendsList"></div>
+            </div>
 
-                <button class="btn btn-primary" onclick="previewMessage()">
-                    Send ↑
+            <div class="card" style="margin-top:18px;">
+                <div class="card-title">🤝 This week's challenge</div>
+                <h2>Encourage someone.</h2>
+                <p>
+                    Send someone a kind message, pray for them,
+                    or simply let them know you're grateful for them.
+                </p>
+
+                <button
+                    class="btn btn-green"
+                    style="margin-top:18px;"
+                    onclick="completeChallenge()">
+                    Challenge completed ✓
                 </button>
             </div>
 
-            <div class="space-note">
-                Preview mode: each friend's messages are kept separately on this device.
-                When Supabase is connected, these will become real private cross-device chats.
+        </div>
+
+        <div id="ourSpaceChat" class="our-space-view hidden">
+            <div class="chat-page-header">
+                <button class="chat-back" onclick="closeFriendChat()" aria-label="Back to friends">←</button>
+                <div class="chat-avatar" id="activeChatAvatar">👤</div>
+                <div class="chat-page-title">
+                    <h2 id="activeChatName">Friend</h2>
+                    <p>Private conversation</p>
+                </div>
             </div>
 
+            <div class="card chat-shell">
+                <div class="chat-top">
+                    <div>
+                        <div class="chat-name" id="activeChatHeader">Private chat</div>
+                        <div class="chat-presence">Only you and this friend can access this conversation</div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages"></div>
+
+                <div class="chat-compose">
+                    <textarea id="chatInput" maxlength="2000" placeholder="Write a message..."></textarea>
+                    <button class="btn btn-primary" onclick="sendMessage()">
+                        Send ↑
+                    </button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -2215,7 +2280,10 @@ textarea:focus,
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* SUPABASE CONNECTION */
+
+/* =========================================================
+   SUPABASE CONNECTION
+========================================================= */
 
 const SUPABASE_URL = "https://zhrvhzhcyjiyfjlijfmj.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_79IVVkEBiRMP2gXdXcDzwA_TzT2tiWN";
@@ -2224,64 +2292,311 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
+
 /* =========================================================
    SUPABASE AUTHENTICATION
 ========================================================= */
 
+const APP_REDIRECT_URL =
+    "https://blackpotatoo.github.io/Growing-to-be-more-like-Jesus/";
+
+let currentSession = null;
+let currentUser = null;
+let currentProfile = null;
+let currentConnections = [];
+let activeConnectionId = null;
+let activeFriend = null;
+let messageChannel = null;
+let ourSpaceInitialized = false;
+let authListenerStarted = false;
+
+function setAuthMessage(text) {
+    const el = document.getElementById("authMessage");
+
+    if (el) {
+        el.textContent = text || "";
+    }
+}
+
 async function signUp() {
-    const email = document.getElementById("authEmail").value.trim();
-    const password = document.getElementById("authPassword").value;
-    const message = document.getElementById("authMessage");
+
+    const email =
+        document.getElementById("authEmail")?.value.trim() || "";
+
+    const password =
+        document.getElementById("authPassword")?.value || "";
 
     if (!email || !password) {
-        message.textContent = "Please enter your email and password.";
+        setAuthMessage("Please enter your email and password.");
         return;
     }
 
-    message.textContent = "Creating your account...";
-
-    const { data, error } = await supabaseClient.auth.signUp({
-        email: email,
-        password: password,
-      options: {
-    emailRedirectTo: "https://blackpotatoo.github.io/Growing-to-be-more-like-Jesus/"
-}
-    });
-
-    if (error) {
-        message.textContent = error.message;
+    if (password.length < 6) {
+        setAuthMessage(
+            "Your password needs to be at least 6 characters."
+        );
         return;
     }
 
-    message.textContent =
-        "Account created! Check your email to confirm your account. 🤎";
-}
-
-async function signIn() {
-    const email = document.getElementById("authEmail").value.trim();
-    const password = document.getElementById("authPassword").value;
-    const message = document.getElementById("authMessage");
-
-    if (!email || !password) {
-        message.textContent = "Please enter your email and password.";
-        return;
-    }
-
-    message.textContent = "Signing you in...";
+    setAuthMessage("Creating your account...");
 
     const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
+        await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+                emailRedirectTo: APP_REDIRECT_URL
+            }
         });
 
     if (error) {
-        message.textContent = error.message;
+
+        if (
+            (error.message || "")
+                .toLowerCase()
+                .includes("rate limit")
+        ) {
+            setAuthMessage(
+                "Too many confirmation emails were requested. " +
+                "Wait a little while, then use Resend confirmation email once."
+            );
+        } else {
+            setAuthMessage(error.message);
+        }
+
         return;
     }
 
-    message.textContent = "Signed in successfully! 🤎";
+    if (data.session) {
+
+        setAuthMessage(
+            "Account created and signed in! 🤎"
+        );
+
+    } else {
+
+        setAuthMessage(
+            "Account created! Check your email and tap the newest confirmation link. 🤎"
+        );
+
+    }
 }
+
+async function resendConfirmation() {
+
+    const email =
+        document.getElementById("authEmail")?.value.trim() || "";
+
+    if (!email) {
+        setAuthMessage(
+            "Enter your email address first."
+        );
+        return;
+    }
+
+    setAuthMessage(
+        "Sending a new confirmation email..."
+    );
+
+    const { error } =
+        await supabaseClient.auth.resend({
+            type: "signup",
+            email,
+            options: {
+                emailRedirectTo: APP_REDIRECT_URL
+            }
+        });
+
+    if (error) {
+
+        if (
+            (error.message || "")
+                .toLowerCase()
+                .includes("rate limit")
+        ) {
+            setAuthMessage(
+                "Email rate limit reached. Wait a little while before trying Resend again."
+            );
+        } else {
+            setAuthMessage(error.message);
+        }
+
+        return;
+    }
+
+    setAuthMessage(
+        "Confirmation email sent. Use the newest email you receive. 🤎"
+    );
+}
+
+async function signIn() {
+
+    const email =
+        document.getElementById("authEmail")?.value.trim() || "";
+
+    const password =
+        document.getElementById("authPassword")?.value || "";
+
+    if (!email || !password) {
+        setAuthMessage(
+            "Please enter your email and password."
+        );
+        return;
+    }
+
+    setAuthMessage("Signing you in...");
+
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
+
+    if (error) {
+
+        const message =
+            (error.message || "").toLowerCase();
+
+        if (
+            message.includes("email not confirmed")
+        ) {
+
+            setAuthMessage(
+                "Your account exists, but the email still needs confirming. " +
+                "Use Resend confirmation email when the email limit has cooled down."
+            );
+
+        } else {
+
+            setAuthMessage(error.message);
+
+        }
+
+        return;
+    }
+
+    currentSession = data.session;
+    currentUser = data.user;
+
+    setAuthMessage("");
+
+    await renderOurSpace();
+}
+
+async function signOut() {
+
+    if (messageChannel) {
+        await supabaseClient.removeChannel(messageChannel);
+        messageChannel = null;
+    }
+
+    await supabaseClient.auth.signOut();
+
+    currentSession = null;
+    currentUser = null;
+    currentProfile = null;
+    currentConnections = [];
+    activeConnectionId = null;
+    activeFriend = null;
+
+    renderAuthState();
+
+    showToast("Signed out ✓");
+}
+
+function renderAuthState() {
+
+    const authSection =
+        document.getElementById("authSection");
+
+    const memberSection =
+        document.getElementById("memberSection");
+
+    const emailEl =
+        document.getElementById("signedInEmail");
+
+    if (!authSection || !memberSection) {
+        return;
+    }
+
+    const signedIn = !!currentUser;
+
+    authSection.style.display =
+        signedIn ? "none" : "block";
+
+    memberSection.style.display =
+        signedIn ? "block" : "none";
+
+    if (emailEl) {
+        emailEl.textContent =
+            currentUser?.email || "";
+    }
+
+    if (!signedIn) {
+
+        document
+            .getElementById("ourSpaceChat")
+            ?.classList.add("hidden");
+
+        document
+            .getElementById("ourSpaceHub")
+            ?.classList.remove("hidden");
+    }
+}
+
+async function initializeOurSpace() {
+
+    if (ourSpaceInitialized) {
+
+        await renderOurSpace();
+
+        return;
+    }
+
+    ourSpaceInitialized = true;
+
+    const {
+        data: {
+            session
+        }
+    } =
+        await supabaseClient.auth.getSession();
+
+    currentSession = session;
+    currentUser =
+        session?.user || null;
+
+    if (!authListenerStarted) {
+
+        authListenerStarted = true;
+
+        supabaseClient.auth.onAuthStateChange(
+            async (_event, session) => {
+
+                currentSession = session;
+                currentUser =
+                    session?.user || null;
+
+                if (
+                    !currentUser &&
+                    messageChannel
+                ) {
+
+                    await supabaseClient
+                        .removeChannel(messageChannel);
+
+                    messageChannel = null;
+                }
+
+                await renderOurSpace();
+            }
+        );
+    }
+
+    await renderOurSpace();
+}
+
+
 /* =========================================================
    DAILY VERSES
    KJV — public domain
@@ -2576,6 +2891,7 @@ const journalPrompts = [
     "How can you show Jesus' love to someone today?",
 
     "What question would you like to ask God?"
+
 ];
 
 const prayerPrompts = [
@@ -2593,6 +2909,7 @@ const prayerPrompts = [
     "What area of your life do you want God to transform?",
 
     "What are you hoping God will teach you?"
+
 ];
 
 
@@ -2604,9 +2921,12 @@ function getData(key, fallback) {
 
     try {
 
-        const value = localStorage.getItem(key);
+        const value =
+            localStorage.getItem(key);
 
-        return value ? JSON.parse(value) : fallback;
+        return value
+            ? JSON.parse(value)
+            : fallback;
 
     } catch {
 
@@ -2616,10 +2936,12 @@ function getData(key, fallback) {
 
 }
 
-
 function setData(key, value) {
 
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(
+        key,
+        JSON.stringify(value)
+    );
 
 }
 
@@ -2630,20 +2952,24 @@ function setData(key, value) {
 
 function getDateKey(date = new Date()) {
 
-    return date.toISOString().split("T")[0];
+    return date
+        .toISOString()
+        .split("T")[0];
 
 }
 
-
 function getDayNumber() {
 
-    const start = new Date("2026-01-01T00:00:00");
+    const start =
+        new Date("2026-01-01T00:00:00");
 
-    const today = new Date();
+    const today =
+        new Date();
 
     const difference =
         Math.floor(
-            (today - start) / (1000 * 60 * 60 * 24)
+            (today - start) /
+            (1000 * 60 * 60 * 24)
         );
 
     return Math.abs(difference);
@@ -2657,40 +2983,53 @@ function getDayNumber() {
 
 function getDailyVerse() {
 
-    const index = getDayNumber() % verses.length;
+    const index =
+        getDayNumber() % verses.length;
 
     return verses[index];
 
 }
 
-
 function displayDailyVerse() {
 
-    const verse = getDailyVerse();
+    const verse =
+        getDailyVerse();
 
-    document.getElementById("dailyVerseText").textContent =
-        verse.text;
+    document
+        .getElementById("dailyVerseText")
+        .textContent =
+            verse.text;
 
-    document.getElementById("dailyVerseReference").textContent =
-        verse.reference;
+    document
+        .getElementById("dailyVerseReference")
+        .textContent =
+            verse.reference;
 
 }
 
-
 function saveDailyVerse() {
 
-    const verse = getDailyVerse();
+    const verse =
+        getDailyVerse();
 
-    let saved = getData("savedVerses", []);
+    let saved =
+        getData("savedVerses", []);
 
     const exists =
-        saved.some(v => v.reference === verse.reference);
+        saved.some(
+            v =>
+                v.reference ===
+                verse.reference
+        );
 
     if (!exists) {
 
         saved.unshift(verse);
 
-        setData("savedVerses", saved);
+        setData(
+            "savedVerses",
+            saved
+        );
 
         showToast("Verse saved ♡");
 
@@ -2701,8 +3040,6 @@ function saveDailyVerse() {
     }
 
 }
-
-
 function shareVerse() {
 
     const verse = getDailyVerse();
@@ -2900,6 +3237,10 @@ function showPage(pageId) {
             );
 
         });
+
+    if (pageId === "shared") {
+        renderShared();
+    }
 
     window.scrollTo({
         top: 0,
@@ -3396,278 +3737,1084 @@ function newPrayerPrompt() {
         .textContent = prompt;
 
 }
-
-
 /* =========================================================
-   OUR SPACE — LOCAL UI PREVIEW
-   Multiple friends + separate private chat views.
-   Supabase connection is added in the next step.
+   OUR SPACE — REAL SUPABASE PROFILES, FRIENDS & MESSAGES
 ========================================================= */
 
-let activePreviewFriend = null;
-
-function getPreviewFriends() {
-    return getData("ourSpacePreviewFriends", []);
+function profileInitials(username) {
+    return (username || "YOU").slice(0, 2).toUpperCase();
 }
 
-function savePreviewFriends(friends) {
-    setData("ourSpacePreviewFriends", friends);
+async function loadCurrentProfile() {
+
+    if (!currentUser) {
+        currentProfile = null;
+        return null;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("id, username, created_at")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Profile load error:", error);
+        showToast("Couldn't load your profile");
+        return null;
+    }
+
+    currentProfile = data || null;
+
+    return currentProfile;
 }
 
-function getPreviewUsername() {
-    return localStorage.getItem("ourSpacePreviewUsername") || "";
+
+function renderProfile() {
+
+    const name =
+        document.getElementById("profileName");
+
+    const avatar =
+        document.getElementById("profileAvatar");
+
+    const input =
+        document.getElementById("usernameInput");
+
+    const button =
+        document.getElementById("saveUsernameButton");
+
+    const note =
+        document.getElementById("profileNote");
+
+    const signedInUsername =
+        document.getElementById("signedInUsername");
+
+    const username =
+        currentProfile?.username || "";
+
+    if (name) {
+        name.textContent =
+            username || "Choose a username";
+    }
+
+    if (avatar) {
+        avatar.textContent =
+            username
+                ? profileInitials(username)
+                : "YOU";
+    }
+
+    if (input) {
+        input.value = username;
+    }
+
+    if (button) {
+        button.textContent =
+            username
+                ? "Update username"
+                : "Save username";
+    }
+
+    if (signedInUsername) {
+        signedInUsername.textContent =
+            username
+                ? `@${username}`
+                : "Your account";
+    }
+
+    if (note) {
+
+        note.textContent =
+            username
+                ? "Your username is saved to your account and can be used by friends to find you."
+                : "Choose a unique username before adding friends.";
+
+    }
+
 }
 
-function previewUsername() {
-    const input = document.getElementById("usernameInput");
-    const username = input.value.trim();
 
-    if (!username) {
-        showToast("Choose a username first 🤍");
+async function saveUsername() {
+
+    if (!currentUser) {
+
+        showToast("Sign in first");
+
         return;
     }
+
+    const input =
+        document.getElementById("usernameInput");
+
+    const username =
+        input?.value.trim() || "";
 
     if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
-        showToast("Use 3–20 letters, numbers or _");
+
+        showToast(
+            "Use 3–20 letters, numbers or _"
+        );
+
         return;
     }
 
-    localStorage.setItem("ourSpacePreviewUsername", username);
-    renderOurSpacePreview();
-    showToast("Username preview saved ✓");
-}
+    let result;
 
-function previewFriendRequest() {
-    const input = document.getElementById("friendUsernameInput");
-    const username = input.value.trim();
+    if (currentProfile) {
 
-    if (!username) {
-        showToast("Enter your friend's username first");
+        result =
+            await supabaseClient
+                .from("profiles")
+                .update({
+                    username
+                })
+                .eq(
+                    "id",
+                    currentUser.id
+                )
+                .select(
+                    "id, username, created_at"
+                )
+                .single();
+
+    } else {
+
+        result =
+            await supabaseClient
+                .from("profiles")
+                .insert({
+                    id: currentUser.id,
+                    username
+                })
+                .select(
+                    "id, username, created_at"
+                )
+                .single();
+
+    }
+
+    if (result.error) {
+
+        if (
+            result.error.code === "23505"
+        ) {
+
+            showToast(
+                "That username is already taken"
+            );
+
+        } else {
+
+            console.error(
+                "Username save error:",
+                result.error
+            );
+
+            showToast(
+                result.error.message ||
+                "Couldn't save username"
+            );
+
+        }
+
         return;
     }
 
-    if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
-        showToast("Use 3–20 letters, numbers or _");
-        return;
-    }
+    currentProfile =
+        result.data;
 
-    const ownUsername = getPreviewUsername();
+    renderProfile();
 
-    if (
-        ownUsername &&
-        username.toLowerCase() === ownUsername.toLowerCase()
-    ) {
-        showToast("You can't add your own username");
-        return;
-    }
-
-    const friends = getPreviewFriends();
-
-    const alreadyAdded = friends.some(
-        friend =>
-            friend.username.toLowerCase() ===
-            username.toLowerCase()
+    showToast(
+        "Username saved ✓"
     );
 
-    if (alreadyAdded) {
-        showToast("That friend is already in your chats 🤍");
+    await refreshConnections();
+
+}
+
+
+async function fetchProfilesByIds(ids) {
+
+    const uniqueIds =
+        [
+            ...new Set(
+                ids.filter(Boolean)
+            )
+        ];
+
+    if (!uniqueIds.length) {
+        return new Map();
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id, username"
+            )
+            .in(
+                "id",
+                uniqueIds
+            );
+
+    if (error) {
+
+        console.error(
+            "Profile lookup error:",
+            error
+        );
+
+        return new Map();
+
+    }
+
+    return new Map(
+        (data || []).map(
+            profile => [
+                profile.id,
+                profile
+            ]
+        )
+    );
+
+}
+
+
+async function refreshConnections() {
+
+    if (!currentUser) return;
+
+    const { data, error } =
+        await supabaseClient
+            .from("connections")
+            .select(
+                "id, requester_id, addressee_id, status, created_at"
+            )
+            .or(
+                `requester_id.eq.${currentUser.id},addressee_id.eq.${currentUser.id}`
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+    if (error) {
+
+        console.error(
+            "Connection load error:",
+            error
+        );
+
+        showToast(
+            "Couldn't load friend connections"
+        );
+
         return;
     }
 
-    friends.push({
-        username,
-        preview: "Tap to open your private chat"
-    });
+    currentConnections =
+        data || [];
 
-    savePreviewFriends(friends);
+    const otherIds =
+        currentConnections.map(
+            connection =>
+                connection.requester_id === currentUser.id
+                    ? connection.addressee_id
+                    : connection.requester_id
+        );
 
-    input.value = "";
+    const profiles =
+        await fetchProfilesByIds(
+            otherIds
+        );
 
-    const container =
-        document.getElementById("friendPreview");
+    renderConnectionLists(
+        profiles
+    );
 
-    container.innerHTML = `
-        <div class="profile-preview">
-            <div class="profile-avatar">
-                ${escapeHTML(username.slice(0,2).toUpperCase())}
-            </div>
+}
 
-            <div style="flex:1;">
-                <div class="profile-name">
-                    ${escapeHTML(username)}
-                </div>
 
-                <div class="profile-sub">
-                    Added to your preview chat list
-                </div>
-            </div>
+function emptyList(
+    message,
+    emoji = "👥"
+) {
 
-            <span
-                style="
-                    color:var(--green-light);
-                    font-size:12px;
-                    font-weight:800;
-                "
-            >
-                ADDED
-            </span>
+    return `
+        <div class="chat-empty">
+            <span class="emoji">${emoji}</span>
+            ${escapeHTML(message)}
         </div>
     `;
 
-    renderFriendsList();
-
-    showToast(`${username} added to your chats 🤝`);
 }
 
-function renderFriendsList() {
 
-    const container =
-        document.getElementById("friendsList");
+function renderConnectionLists(
+    profileMap
+) {
 
-    if (!container) return;
+    const incomingEl =
+        document.getElementById(
+            "incomingRequests"
+        );
 
-    const friends =
-        getPreviewFriends();
+    const outgoingEl =
+        document.getElementById(
+            "outgoingRequests"
+        );
 
-    if (!friends.length) {
+    const friendsEl =
+        document.getElementById(
+            "friendsList"
+        );
 
-        container.innerHTML = `
-            <div class="chat-empty">
+    const incoming =
+        currentConnections.filter(
+            c =>
+                c.status === "pending" &&
+                c.addressee_id === currentUser.id
+        );
 
-                <span class="emoji">
-                    👥
-                </span>
+    const outgoing =
+        currentConnections.filter(
+            c =>
+                c.status === "pending" &&
+                c.requester_id === currentUser.id
+        );
 
-                No friends added yet.<br>
+    const accepted =
+        currentConnections.filter(
+            c =>
+                c.status === "accepted"
+        );
 
-                Add someone by username and
-                they will appear here.
+    if (incomingEl) {
 
-            </div>
-        `;
+        incomingEl.innerHTML =
+            incoming.length
+
+                ? incoming.map(
+                    connection => {
+
+                        const profile =
+                            profileMap.get(
+                                connection.requester_id
+                            );
+
+                        const username =
+                            profile?.username ||
+                            "Unknown user";
+
+                        return `
+                            <div class="request-card">
+
+                                <div class="friend-card-avatar">
+                                    ${escapeHTML(
+                                        profileInitials(username)
+                                    )}
+                                </div>
+
+                                <div class="request-card-copy">
+
+                                    <div class="profile-name">
+                                        ${escapeHTML(username)}
+                                    </div>
+
+                                    <div class="profile-sub">
+                                        Wants to connect with you
+                                    </div>
+
+                                </div>
+
+                                <div class="request-actions">
+
+                                    <button
+                                        class="btn btn-green"
+                                        onclick="acceptFriendRequest(${connection.id})">
+                                        Accept
+                                    </button>
+
+                                    <button
+                                        class="btn btn-secondary"
+                                        onclick="declineFriendRequest(${connection.id})">
+                                        Decline
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        `;
+
+                    }
+                ).join("")
+
+                : emptyList(
+                    "No new friend requests.",
+                    "📩"
+                );
+
+    }
+
+    if (outgoingEl) {
+
+        outgoingEl.innerHTML =
+            outgoing.length
+
+                ? outgoing.map(
+                    connection => {
+
+                        const profile =
+                            profileMap.get(
+                                connection.addressee_id
+                            );
+
+                        const username =
+                            profile?.username ||
+                            "Unknown user";
+
+                        return `
+                            <div class="request-card">
+
+                                <div class="friend-card-avatar">
+                                    ${escapeHTML(
+                                        profileInitials(username)
+                                    )}
+                                </div>
+
+                                <div class="request-card-copy">
+
+                                    <div class="profile-name">
+                                        ${escapeHTML(username)}
+                                    </div>
+
+                                    <div class="profile-sub">
+                                        Friend request sent
+                                    </div>
+
+                                </div>
+
+                                <span class="status-pill">
+                                    PENDING
+                                </span>
+
+                            </div>
+                        `;
+
+                    }
+                ).join("")
+
+                : emptyList(
+                    "You haven't sent any pending requests.",
+                    "📤"
+                );
+
+    }
+
+    if (friendsEl) {
+
+        if (!accepted.length) {
+
+            friendsEl.innerHTML =
+                emptyList(
+                    "No accepted friends yet. Once a request is accepted, that person will appear here."
+                );
+
+            return;
+        }
+
+        friendsEl.innerHTML =
+            accepted.map(
+                connection => {
+
+                    const otherId =
+                        connection.requester_id === currentUser.id
+                            ? connection.addressee_id
+                            : connection.requester_id;
+
+                    const profile =
+                        profileMap.get(
+                            otherId
+                        );
+
+                    const username =
+                        profile?.username ||
+                        "Unknown user";
+
+                    return `
+                        <button
+                            class="friend-card"
+                            onclick="openFriendChat(${connection.id}, '${username}')">
+
+                            <div class="friend-card-avatar">
+                                ${escapeHTML(
+                                    profileInitials(username)
+                                )}
+                            </div>
+
+                            <div class="friend-card-copy">
+
+                                <div class="friend-card-name">
+                                    ${escapeHTML(username)}
+                                </div>
+
+                                <div class="friend-card-preview">
+                                    Tap to open your private chat
+                                </div>
+
+                            </div>
+
+                            <div class="friend-card-arrow">
+                                ›
+                            </div>
+
+                        </button>
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+}
+
+
+async function sendFriendRequest() {
+
+    if (!currentUser) {
+
+        showToast(
+            "Sign in first"
+        );
 
         return;
     }
 
-    container.innerHTML =
-        friends.map(friend => `
+    if (!currentProfile) {
 
-            <button
-                class="friend-card"
-                onclick="
-                    openFriendChat(
-                        '${friend.username.replace(/'/g, "\\'")}'
+        showToast(
+            "Choose your username first"
+        );
+
+        return;
+    }
+
+    const input =
+        document.getElementById(
+            "friendUsernameInput"
+        );
+
+    const message =
+        document.getElementById(
+            "friendRequestMessage"
+        );
+
+    const username =
+        input?.value.trim() || "";
+
+    if (
+        !/^[A-Za-z0-9_]{3,20}$/.test(
+            username
+        )
+    ) {
+
+        if (message) {
+            message.textContent =
+                "Enter a valid username using 3–20 letters, numbers or _.";
+        }
+
+        return;
+    }
+
+    if (
+        username.toLowerCase() ===
+        currentProfile.username.toLowerCase()
+    ) {
+
+        if (message) {
+            message.textContent =
+                "You can't send a friend request to yourself.";
+        }
+
+        return;
+    }
+
+    if (message) {
+        message.textContent =
+            "Looking for that username...";
+    }
+
+    const {
+        data: friend,
+        error: lookupError
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id, username"
+            )
+            .ilike(
+                "username",
+                username
+            )
+            .maybeSingle();
+
+    if (lookupError) {
+
+        console.error(
+            "Friend lookup error:",
+            lookupError
+        );
+
+        if (message) {
+            message.textContent =
+                lookupError.message;
+        }
+
+        return;
+    }
+
+    if (!friend) {
+
+        if (message) {
+            message.textContent =
+                "No account with that username was found.";
+        }
+
+        return;
+    }
+
+    const existing =
+        currentConnections.find(
+            connection => {
+
+                const samePeople =
+                    (
+                        connection.requester_id === currentUser.id &&
+                        connection.addressee_id === friend.id
                     )
-                "
-            >
+                    ||
+                    (
+                        connection.requester_id === friend.id &&
+                        connection.addressee_id === currentUser.id
+                    );
 
-                <div class="friend-card-avatar">
-                    ${escapeHTML(
-                        friend.username
-                            .slice(0,2)
-                            .toUpperCase()
-                    )}
-                </div>
+                return (
+                    samePeople &&
+                    connection.status !== "declined"
+                );
 
-                <div class="friend-card-copy">
+            }
+        );
 
-                    <div class="friend-card-name">
-                        ${escapeHTML(friend.username)}
-                    </div>
+    if (existing) {
 
-                    <div class="friend-card-preview">
-                        ${escapeHTML(
-                            friend.preview ||
-                            "Tap to open your private chat"
-                        )}
-                    </div>
+        if (
+            existing.status ===
+            "accepted"
+        ) {
 
-                </div>
+            if (message) {
+                message.textContent =
+                    `You and ${friend.username} are already friends.`;
+            }
 
-                <div class="friend-card-arrow">
-                    ›
-                </div>
+        } else if (
+            existing.addressee_id ===
+            currentUser.id
+        ) {
 
-            </button>
+            if (message) {
+                message.textContent =
+                    `${friend.username} already sent you a request. Accept it in Friend requests.`;
+            }
 
-        `).join("");
+        } else {
+
+            if (message) {
+                message.textContent =
+                    `Your request to ${friend.username} is already pending.`;
+            }
+
+        }
+
+        return;
+    }
+
+    const { error } =
+        await supabaseClient
+            .from("connections")
+            .insert({
+                requester_id:
+                    currentUser.id,
+
+                addressee_id:
+                    friend.id,
+
+                status:
+                    "pending"
+            });
+
+    if (error) {
+
+        if (
+            error.code ===
+            "23505"
+        ) {
+
+            if (message) {
+                message.textContent =
+                    "A previous request already exists between these accounts.";
+            }
+
+        } else {
+
+            console.error(
+                "Friend request error:",
+                error
+            );
+
+            if (message) {
+                message.textContent =
+                    error.message;
+            }
+
+        }
+
+        return;
+    }
+
+    if (input) {
+        input.value = "";
+    }
+
+    if (message) {
+        message.textContent =
+            `Friend request sent to ${friend.username}. 🤝`;
+    }
+
+    await refreshConnections();
+
 }
 
-function openFriendChat(username) {
 
-    activePreviewFriend =
+async function acceptFriendRequest(
+    connectionId
+) {
+
+    const { error } =
+        await supabaseClient
+            .from("connections")
+            .update({
+                status:
+                    "accepted"
+            })
+            .eq(
+                "id",
+                connectionId
+            );
+
+    if (error) {
+
+        console.error(
+            "Accept request error:",
+            error
+        );
+
+        showToast(
+            error.message ||
+            "Couldn't accept request"
+        );
+
+        return;
+    }
+
+    showToast(
+        "Friend request accepted 🤝"
+    );
+
+    await refreshConnections();
+
+}
+
+
+async function declineFriendRequest(
+    connectionId
+) {
+
+    const { error } =
+        await supabaseClient
+            .from("connections")
+            .update({
+                status:
+                    "declined"
+            })
+            .eq(
+                "id",
+                connectionId
+            );
+
+    if (error) {
+
+        console.error(
+            "Decline request error:",
+            error
+        );
+
+        showToast(
+            error.message ||
+            "Couldn't decline request"
+        );
+
+        return;
+    }
+
+    showToast(
+        "Friend request declined"
+    );
+
+    await refreshConnections();
+
+}
+
+
+async function openFriendChat(
+    connectionId,
+    username
+) {
+
+    activeConnectionId =
+        Number(connectionId);
+
+    activeFriend =
         username;
 
     document
-        .getElementById("ourSpaceHub")
-        .classList
+        .getElementById(
+            "ourSpaceHub"
+        )
+        ?.classList
         .add("hidden");
 
     document
-        .getElementById("ourSpaceChat")
-        .classList
+        .getElementById(
+            "ourSpaceChat"
+        )
+        ?.classList
         .remove("hidden");
 
-    document
-        .getElementById("activeChatName")
-        .textContent =
-        username;
+    const name =
+        document.getElementById(
+            "activeChatName"
+        );
 
-    document
-        .getElementById("activeChatHeader")
-        .textContent =
-        `Chat with ${username}`;
+    const header =
+        document.getElementById(
+            "activeChatHeader"
+        );
 
-    document
-        .getElementById("activeChatAvatar")
-        .textContent =
-        username
-            .slice(0,2)
-            .toUpperCase();
+    const avatar =
+        document.getElementById(
+            "activeChatAvatar"
+        );
 
-    renderPreviewMessages();
+    if (name) {
+        name.textContent =
+            username;
+    }
+
+    if (header) {
+        header.textContent =
+            `Chat with ${username}`;
+    }
+
+    if (avatar) {
+        avatar.textContent =
+            profileInitials(
+                username
+            );
+    }
+
+    await loadMessages();
+
+    await subscribeToActiveChat();
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
+
 }
 
-function closeFriendChat() {
+
+async function closeFriendChat() {
 
     document
-        .getElementById("ourSpaceChat")
-        .classList
+        .getElementById(
+            "ourSpaceChat"
+        )
+        ?.classList
         .add("hidden");
 
     document
-        .getElementById("ourSpaceHub")
-        .classList
+        .getElementById(
+            "ourSpaceHub"
+        )
+        ?.classList
         .remove("hidden");
 
-    activePreviewFriend =
+    if (messageChannel) {
+
+        await supabaseClient
+            .removeChannel(
+                messageChannel
+            );
+
+        messageChannel = null;
+
+    }
+
+    activeConnectionId =
+        null;
+
+    activeFriend =
         null;
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
+
 }
 
-function getFriendMessageKey(username) {
 
-    return (
-        "ourSpacePreviewMessages_" +
-        username.toLowerCase()
-    );
+async function loadMessages() {
+
+    const container =
+        document.getElementById(
+            "chatMessages"
+        );
+
+    if (
+        !container ||
+        !activeConnectionId ||
+        !currentUser
+    ) {
+        return;
+    }
+
+    container.innerHTML =
+        emptyList(
+            "Loading messages...",
+            "💬"
+        );
+
+    const { data, error } =
+        await supabaseClient
+            .from("messages")
+            .select(
+                "id, sender_id, body, created_at"
+            )
+            .eq(
+                "connection_id",
+                activeConnectionId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
+
+    if (error) {
+
+        console.error(
+            "Message load error:",
+            error
+        );
+
+        container.innerHTML =
+            emptyList(
+                "Couldn't load this conversation.",
+                "💬"
+            );
+
+        return;
+    }
+
+    const messages =
+        data || [];
+
+    if (!messages.length) {
+
+        container.innerHTML =
+            emptyList(
+                `No messages with ${activeFriend || "this friend"} yet. Start the conversation below.`,
+                "💬"
+            );
+
+        return;
+    }
+
+    container.innerHTML =
+        messages.map(
+            message => {
+
+                const mine =
+                    message.sender_id ===
+                    currentUser.id;
+
+                const time =
+                    new Date(
+                        message.created_at
+                    ).toLocaleTimeString(
+                        [],
+                        {
+                            hour:
+                                "numeric",
+                            minute:
+                                "2-digit"
+                        }
+                    );
+
+                return `
+                    <div class="message ${mine ? "mine" : "theirs"}">
+
+                        ${escapeHTML(
+                            message.body
+                        )}
+
+                        <span class="message-time">
+                            ${escapeHTML(
+                                time
+                            )}
+                        </span>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+    container.scrollTop =
+        container.scrollHeight;
+
 }
 
-function previewMessage() {
 
-    if (!activePreviewFriend) {
+async function sendMessage() {
+
+    if (
+        !currentUser ||
+        !activeConnectionId
+    ) {
 
         showToast(
-            "Choose a friend first 🤍"
+            "Open a friend chat first"
         );
 
         return;
@@ -3679,7 +4826,7 @@ function previewMessage() {
         );
 
     const text =
-        input.value.trim();
+        input?.value.trim() || "";
 
     if (!text) {
 
@@ -3690,179 +4837,132 @@ function previewMessage() {
         return;
     }
 
-    const key =
-        getFriendMessageKey(
-            activePreviewFriend
-        );
-
-    let messages =
-        getData(key, []);
-
-    messages.push({
-
-        text,
-
-        time:
-            new Date()
-                .toLocaleTimeString(
-                    [],
-                    {
-                        hour: "numeric",
-                        minute: "2-digit"
-                    }
-                )
-
-    });
-
-    setData(
-        key,
-        messages
-    );
-
-    input.value = "";
-
-    renderPreviewMessages();
-
-    showToast(
-        `Preview message added to ${activePreviewFriend} 💬`
-    );
-}
-
-function renderPreviewMessages() {
-
-    const container =
-        document.getElementById(
-            "chatMessages"
-        );
-
-    if (!container) return;
-
-    if (!activePreviewFriend) {
-
-        container.innerHTML = `
-
-            <div class="chat-empty">
-
-                <span class="emoji">
-                    👥
-                </span>
-
-                Choose a friend to open
-                a private conversation.
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-    const messages =
-        getData(
-            getFriendMessageKey(
-                activePreviewFriend
-            ),
-            []
-        );
-
-    if (!messages.length) {
-
-        container.innerHTML = `
-
-            <div class="chat-empty">
-
-                <span class="emoji">
-                    💬
-                </span>
-
-                No messages with
-                ${escapeHTML(activePreviewFriend)}
-                yet.<br>
-
-                Start the conversation below.
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-    container.innerHTML =
-        messages.map(message => `
-
-            <div class="message mine">
-
-                ${escapeHTML(message.text)}
-
-                <span class="message-time">
-                    ${escapeHTML(message.time)}
-                </span>
-
-            </div>
-
-        `).join("");
-
-    container.scrollTop =
-        container.scrollHeight;
-}
-
-function renderOurSpacePreview() {
-
-    const username =
-        getPreviewUsername();
-
-    const input =
-        document.getElementById(
-            "usernameInput"
-        );
-
-    const name =
-        document.getElementById(
-            "profileName"
-        );
-
-    const avatar =
-        document.getElementById(
-            "profileAvatar"
-        );
-
     if (
-        input &&
-        username
+        text.length > 2000
     ) {
-        input.value =
-            username;
+
+        showToast(
+            "Messages can be up to 2000 characters"
+        );
+
+        return;
     }
 
-    if (name) {
+    const { error } =
+        await supabaseClient
+            .from("messages")
+            .insert({
+                connection_id:
+                    activeConnectionId,
 
-        name.textContent =
-            username ||
-            "Your username";
+                sender_id:
+                    currentUser.id,
+
+                body:
+                    text
+            });
+
+    if (error) {
+
+        console.error(
+            "Send message error:",
+            error
+        );
+
+        showToast(
+            error.message ||
+            "Couldn't send message"
+        );
+
+        return;
     }
 
-    if (avatar) {
-
-        avatar.textContent =
-            username
-                ? username
-                    .slice(0,2)
-                    .toUpperCase()
-                : "YOU";
+    if (input) {
+        input.value = "";
     }
 
-    renderFriendsList();
+    await loadMessages();
 
-    renderPreviewMessages();
 }
 
 
-/* Backwards-compatible name used by the original app start-up. */
+async function subscribeToActiveChat() {
+
+    if (!activeConnectionId) {
+        return;
+    }
+
+    if (messageChannel) {
+
+        await supabaseClient
+            .removeChannel(
+                messageChannel
+            );
+
+        messageChannel =
+            null;
+
+    }
+
+    messageChannel =
+        supabaseClient
+            .channel(
+                `messages-${activeConnectionId}`
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event:
+                        "INSERT",
+
+                    schema:
+                        "public",
+
+                    table:
+                        "messages",
+
+                    filter:
+                        `connection_id=eq.${activeConnectionId}`
+                },
+
+                async () => {
+
+                    await loadMessages();
+
+                }
+            )
+            .subscribe();
+
+}
+
+
+async function renderOurSpace() {
+
+    renderAuthState();
+
+    if (!currentUser) {
+
+        currentProfile =
+            null;
+
+        currentConnections =
+            [];
+
+        return;
+    }
+
+    await loadCurrentProfile();
+
+    renderProfile();
+
+    await refreshConnections();
+
+}
+
 
 function renderShared() {
 
-    renderOurSpacePreview();
+    initializeOurSpace();
 
 }
 
@@ -3877,7 +4977,10 @@ function openVideoSearch(query) {
         "https://www.youtube.com/results?search_query=" +
         encodeURIComponent(query);
 
-    window.open(url, "_blank");
+    window.open(
+        url,
+        "_blank"
+    );
 
 }
 
@@ -3889,8 +4992,11 @@ function openVideoSearch(query) {
 function openModal() {
 
     document
-        .getElementById("modal")
-        .classList.add("open");
+        .getElementById(
+            "modal"
+        )
+        .classList
+        .add("open");
 
 }
 
@@ -3898,14 +5004,19 @@ function openModal() {
 function closeModal() {
 
     document
-        .getElementById("modal")
-        .classList.remove("open");
+        .getElementById(
+            "modal"
+        )
+        .classList
+        .remove("open");
 
 }
 
 
 document
-    .getElementById("modal")
+    .getElementById(
+        "modal"
+    )
     .addEventListener(
         "click",
         function(event) {
@@ -3984,10 +5095,17 @@ function displayDate() {
         today.toLocaleDateString(
             undefined,
             {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-                year: "numeric"
+                weekday:
+                    "long",
+
+                month:
+                    "long",
+
+                day:
+                    "numeric",
+
+                year:
+                    "numeric"
             }
         );
 
@@ -4024,25 +5142,32 @@ function initializeApp() {
     if (savedMood) {
 
         document
-            .querySelectorAll(".mood")
-            .forEach(button => {
+            .querySelectorAll(
+                ".mood"
+            )
+            .forEach(
+                button => {
 
-                if (
-                    button
-                        .textContent
-                        .toLowerCase()
-                        .includes(
-                            savedMood.toLowerCase()
-                        )
-                ) {
+                    if (
+                        button
+                            .textContent
+                            .toLowerCase()
+                            .includes(
+                                savedMood
+                                    .toLowerCase()
+                            )
+                    ) {
 
-                    button
-                        .classList
-                        .add("selected");
+                        button
+                            .classList
+                            .add(
+                                "selected"
+                            );
+
+                    }
 
                 }
-
-            });
+            );
 
     }
 
