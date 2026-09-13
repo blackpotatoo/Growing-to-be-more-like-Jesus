@@ -2307,7 +2307,15 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_79IVVkEBiRMP2gXdXcDzwA_TzT2tiWN
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: window.localStorage
+        }
+    }
 );
 
 /* =========================================================
@@ -2431,6 +2439,7 @@ let currentConnections = [];
 let activeConnectionId = null;
 let activeFriend = null;
 let messageChannel = null;
+let connectionsChannel = null;
 let ourSpaceInitialized = false;
 let authListenerStarted = false;
 
@@ -2505,7 +2514,39 @@ async function signUp() {
 
     }
 }
+async function subscribeToConnections() {
+    if (!currentUser) return;
 
+    if (connectionsChannel) {
+        await supabaseClient.removeChannel(connectionsChannel);
+        connectionsChannel = null;
+    }
+
+    connectionsChannel = supabaseClient
+        .channel(`connections-${currentUser.id}`)
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "connections"
+            },
+            async (payload) => {
+                const row = payload.new || payload.old;
+
+                if (!row) return;
+
+                const involvesCurrentUser =
+                    row.requester_id === currentUser.id ||
+                    row.addressee_id === currentUser.id;
+
+                if (involvesCurrentUser) {
+                    await refreshConnections();
+                }
+            }
+        )
+        .subscribe();
+}
 async function resendConfirmation() {
 
     const email =
@@ -2700,7 +2741,17 @@ async function initializeOurSpace() {
                 currentSession = session;
                 currentUser =
                     session?.user || null;
+if (!currentUser) {
+    if (messageChannel) {
+        await supabaseClient.removeChannel(messageChannel);
+        messageChannel = null;
+    }
 
+    if (connectionsChannel) {
+        await supabaseClient.removeChannel(connectionsChannel);
+        connectionsChannel = null;
+    }
+}
                 if (
                     !currentUser &&
                     messageChannel
@@ -5075,11 +5126,13 @@ async function renderOurSpace() {
         return;
     }
 
-    await loadCurrentProfile();
+await loadCurrentProfile();
+renderProfile();
+await refreshConnections();
 
-    renderProfile();
-
-    await refreshConnections();
+if (!connectionsChannel) {
+    await subscribeToConnections();
+}
 
 }
 
