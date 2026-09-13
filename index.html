@@ -1491,6 +1491,14 @@ textarea:focus,
 .bible-highlight-remove:active {
     opacity: .65;
 }
+/* Selected Bible verse */
+.bible-verse-selected {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: rgba(217, 170, 91, 0.7);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+}
 </style>
 </head>
 
@@ -4512,8 +4520,52 @@ function selectBibleVerseForTools(
     verseNumber,
     verseElement
 ) {
-    selectedBibleVerseForTools = verseNumber;
-    selectedBibleVerseElement = verseElement;
+    const chapterText =
+        document.getElementById("bibleChapterText");
+
+    const verseText =
+        verseElement.parentNode?.querySelector(
+            `[data-bible-verse-text="${verseNumber}"]`
+        );
+
+    /* Tap the same verse again = deselect it */
+    if (selectedBibleVerseForTools === verseNumber) {
+        chapterText
+            ?.querySelectorAll(".bible-verse-selected")
+            .forEach((element) => {
+                element.classList.remove(
+                    "bible-verse-selected"
+                );
+            });
+
+        hideBibleHighlightToolbar();
+        return;
+    }
+
+    /* Remove selection underline from previous verse */
+    chapterText
+        ?.querySelectorAll(".bible-verse-selected")
+        .forEach((element) => {
+            element.classList.remove(
+                "bible-verse-selected"
+            );
+        });
+
+    selectedBibleVerseForTools =
+        verseNumber;
+
+    selectedBibleVerseElement =
+        verseElement;
+
+    verseElement.classList.add(
+        "bible-verse-selected"
+    );
+
+    if (verseText) {
+        verseText.classList.add(
+            "bible-verse-selected"
+        );
+    }
 
     showBibleHighlightToolbar();
 }
