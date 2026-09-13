@@ -4184,38 +4184,78 @@ if (pendingVerse?.start) {
             chapterText.querySelectorAll(".v");
 
         let firstMatchedVerse = null;
+const verseElements = Array.from(verseNumbers);
 
-        verseNumbers.forEach((verseElement) => {
-            const verseNumber =
-                parseInt(
-                    verseElement.textContent.trim(),
-                    10
-                );
+verseElements.forEach((verseElement, index) => {
+    const verseNumber =
+        parseInt(
+            verseElement.getAttribute("data-number") ||
+            verseElement.textContent.trim(),
+            10
+        );
 
-            if (
-                verseNumber >= pendingVerse.start &&
-                verseNumber <= pendingVerse.end
+    if (
+        verseNumber >= pendingVerse.start &&
+        verseNumber <= pendingVerse.end
+    ) {
+        verseElement.style.background =
+            "rgba(217,170,91,.22)";
+
+        verseElement.style.borderRadius =
+            "6px";
+
+        verseElement.style.padding =
+            "2px 4px";
+
+        const parent =
+            verseElement.parentNode;
+
+        if (parent) {
+            const highlight =
+                document.createElement("span");
+
+            highlight.style.background =
+                "rgba(217,170,91,.14)";
+
+            highlight.style.borderRadius =
+                "6px";
+
+            parent.insertBefore(
+                highlight,
+                verseElement.nextSibling
+            );
+
+            let node =
+                highlight.nextSibling;
+
+            const nextVerse =
+                verseElements[index + 1];
+
+            while (
+                node &&
+                node !== nextVerse
             ) {
-                const verseContainer =
-                    verseElement.parentElement;
-
-                if (verseContainer) {
-                    verseContainer.style.background =
-                        "rgba(217,170,91,.14)";
-
-                    verseContainer.style.borderRadius =
-                        "8px";
-
-                    verseContainer.style.padding =
-                        "3px 5px";
-
-                    if (!firstMatchedVerse) {
-                        firstMatchedVerse =
-                            verseContainer;
-                    }
+                if (
+                    node.nodeType === 1 &&
+                    node.classList?.contains("v")
+                ) {
+                    break;
                 }
+
+                const nextNode =
+                    node.nextSibling;
+
+                highlight.appendChild(node);
+                node = nextNode;
             }
-        });
+        }
+
+        if (!firstMatchedVerse) {
+            firstMatchedVerse =
+                verseElement;
+        }
+    }
+});
 
         if (firstMatchedVerse) {
             firstMatchedVerse.scrollIntoView({
