@@ -1,0 +1,10 @@
+{
+  "name": "Growing to Be More Like Jesus",
+  "short_name": "Grow With Jesus",
+  "description": "A private space to grow in faith together.",
+  "start_url": "/Growing-to-be-more-like-Jesus/",
+  "scope": "/Growing-to-be-more-like-Jesus/",
+  "display": "standalone",
+  "background_color": "#17120f",
+  "theme_color": "#17120f"
+}
