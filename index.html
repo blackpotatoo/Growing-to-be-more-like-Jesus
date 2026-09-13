@@ -1385,6 +1385,112 @@ textarea:focus,
     vertical-align: super;
     line-height: 1;
 }
+/* =========================================
+   BIBLE HIGHLIGHT TOOLBAR
+========================================= */
+
+#bibleHighlightToolbar {
+    position: fixed;
+    left: 50%;
+    bottom: 92px;
+    transform: translateX(-50%) translateY(18px);
+    width: calc(100% - 32px);
+    max-width: 430px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition:
+        opacity .2s ease,
+        transform .2s ease;
+}
+
+#bibleHighlightToolbar.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.bible-highlight-toolbar-inner {
+    background: rgba(18, 15, 13, 0.97);
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 12px 32px rgba(0,0,0,.28);
+    border-radius: 14px;
+    padding: 12px 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+}
+
+.bible-highlight-color {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 0;
+
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.14);
+    box-shadow: none;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    cursor: pointer;
+    transition:
+        transform .15s ease,
+        border-color .15s ease;
+}
+
+.bible-highlight-color:active {
+    transform: scale(.90);
+}
+
+.bible-highlight-color.red {
+    background: #c96f6f;
+}
+
+.bible-highlight-color.orange {
+    background: #cf8b55;
+}
+
+.bible-highlight-color.yellow {
+    background: #c9aa57;
+}
+
+.bible-highlight-color.green {
+    background: #789b72;
+}
+
+.bible-highlight-color.blue {
+    background: #6f8fae;
+}
+
+.bible-highlight-color.purple {
+    background: #8d78a3;
+}
+
+.bible-highlight-remove {
+    background: transparent;
+    border: 0;
+    border-left: 1px solid rgba(255,255,255,.10);
+
+    color: #b9b1aa;
+    font-size: 13px;
+    font-weight: 600;
+
+    padding: 6px 0 6px 13px;
+    margin-left: 2px;
+
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.bible-highlight-remove:active {
+    opacity: .65;
+}
 </style>
 </head>
 
@@ -4188,6 +4294,7 @@ async function openBibleChapter(chapter) {
 
         chapterText.innerHTML =
             chapterData.data.content;
+            prepareBibleVersesForTools();
             const pendingVerse = window.pendingBibleVerse;
 
 if (pendingVerse?.start) {
@@ -4302,8 +4409,180 @@ verseElements.forEach((verseElement, index) => {
         behavior: "smooth"
     });
 }
+function prepareBibleVersesForTools() {
+    const chapterText =
+        document.getElementById("bibleChapterText");
 
+    if (!chapterText) return;
 
+    const verseNumbers =
+        chapterText.querySelectorAll(".v");
+
+    verseNumbers.forEach((verseElement) => {
+        const verseNumber =
+            parseInt(
+                verseElement.getAttribute("data-number") ||
+                verseElement.textContent.trim(),
+                10
+            );
+
+        if (!verseNumber) return;
+
+        verseElement.dataset.verseNumber =
+            verseNumber;
+
+        verseElement.style.cursor =
+            "pointer";
+
+        verseElement.addEventListener(
+            "click",
+            () => {
+                selectBibleVerseForTools(
+                    verseNumber,
+                    verseElement
+                );
+            }
+        );
+    });
+}
+let selectedBibleVerseForTools = null;
+let selectedBibleVerseElement = null;
+
+function selectBibleVerseForTools(
+    verseNumber,
+    verseElement
+) {
+    selectedBibleVerseForTools = verseNumber;
+    selectedBibleVerseElement = verseElement;
+
+    showBibleHighlightToolbar();
+}
+function showBibleHighlightToolbar() {
+    let toolbar =
+        document.getElementById("bibleHighlightToolbar");
+
+    if (!toolbar) {
+        toolbar =
+            document.createElement("div");
+
+        toolbar.id =
+            "bibleHighlightToolbar";
+
+        toolbar.innerHTML = `
+            <div class="bible-highlight-toolbar-inner">
+
+                <button
+                    class="bible-highlight-color red"
+                    onclick="applyBibleHighlight('red')"
+                    aria-label="Red highlight"
+                ></button>
+
+                <button
+                    class="bible-highlight-color orange"
+                    onclick="applyBibleHighlight('orange')"
+                    aria-label="Orange highlight"
+                ></button>
+
+                <button
+                    class="bible-highlight-color yellow"
+                    onclick="applyBibleHighlight('yellow')"
+                    aria-label="Yellow highlight"
+                ></button>
+
+                <button
+                    class="bible-highlight-color green"
+                    onclick="applyBibleHighlight('green')"
+                    aria-label="Green highlight"
+                ></button>
+
+                <button
+                    class="bible-highlight-color blue"
+                    onclick="applyBibleHighlight('blue')"
+                    aria-label="Blue highlight"
+                ></button>
+
+                <button
+                    class="bible-highlight-color purple"
+                    onclick="applyBibleHighlight('purple')"
+                    aria-label="Purple highlight"
+                ></button>
+
+                <button
+                    class="bible-highlight-remove"
+                    onclick="removeBibleHighlight()"
+                >
+                    Remove
+                </button>
+
+            </div>
+        `;
+
+        document.body.appendChild(toolbar);
+    }
+
+    toolbar.classList.add("show");
+}
+function applyBibleHighlight(color) {
+    if (!selectedBibleVerseElement || !selectedBibleVerseForTools) {
+        return;
+    }
+
+    const colors = {
+        red: "rgba(255, 99, 99, 0.28)",
+        orange: "rgba(255, 166, 77, 0.30)",
+        yellow: "rgba(255, 221, 87, 0.30)",
+        green: "rgba(112, 190, 120, 0.28)",
+        blue: "rgba(100, 170, 255, 0.28)",
+        purple: "rgba(175, 120, 255, 0.28)"
+    };
+
+    const chosenColor = colors[color];
+
+    if (!chosenColor) return;
+
+    selectedBibleVerseElement.style.background =
+        chosenColor;
+
+    selectedBibleVerseElement.style.borderRadius =
+        "5px";
+
+    selectedBibleVerseElement.style.padding =
+        "2px 4px";
+
+    selectedBibleVerseElement.dataset.highlightColor =
+        color;
+
+    hideBibleHighlightToolbar();
+}
+
+function removeBibleHighlight() {
+    if (!selectedBibleVerseElement) return;
+
+    selectedBibleVerseElement.style.background =
+        "";
+
+    selectedBibleVerseElement.style.borderRadius =
+        "";
+
+    selectedBibleVerseElement.style.padding =
+        "";
+
+    delete selectedBibleVerseElement.dataset.highlightColor;
+
+    hideBibleHighlightToolbar();
+}
+
+function hideBibleHighlightToolbar() {
+    const toolbar =
+        document.getElementById("bibleHighlightToolbar");
+
+    if (toolbar) {
+        toolbar.classList.remove("show");
+    }
+
+    selectedBibleVerseForTools = null;
+    selectedBibleVerseElement = null;
+}
 function previousBibleChapter() {
 
     if (!selectedBibleBook || !selectedBibleChapter) return;
