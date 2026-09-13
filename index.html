@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   <link rel="manifest" href="manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#17130f">
@@ -2054,7 +2055,22 @@ textarea:focus,
                 </button>
             </div>
         </div>
+<div class="card" style="margin-bottom:18px;">
+    <div class="card-title">🔔 Notifications</div>
+    <h2>Message notifications</h2>
 
+    <p id="notificationStatus">
+        Turn on notifications so you can know when a friend sends you a message.
+    </p>
+
+    <button
+        id="enableNotificationsBtn"
+        class="btn btn-primary"
+        onclick="enablePushNotifications()"
+    >
+        🔔 Enable notifications
+    </button>
+</div>
         <div id="ourSpaceHub" class="our-space-view">
 
             <div class="section-header">
@@ -2299,7 +2315,114 @@ const supabaseClient = window.supabase.createClient(
 
 const APP_REDIRECT_URL =
     "https://blackpotatoo.github.io/Growing-to-be-more-like-Jesus/";
+const VAPID_PUBLIC_KEY = "BL3KN89uKlLQStG5MmJiEhLOou7Ql1rZTQeuvXZHwCsR6qCZ5zo6WZWdrnI79zZfFU78ClTB9IRI9CjQLJBvRf0";
 
+function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+
+    return outputArray;
+}
+
+async function enablePushNotifications() {
+    const statusEl = document.getElementById("notificationStatus");
+    const button = document.getElementById("enableNotificationsBtn");
+
+    if (!currentUser) {
+        if (statusEl) statusEl.textContent = "Please sign in first.";
+        return;
+    }
+
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        if (statusEl) {
+            statusEl.textContent = "Push notifications are not supported on this browser/device.";
+        }
+        return;
+    }
+
+    const isStandalone =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+
+    if (!isStandalone && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        if (statusEl) {
+            statusEl.textContent =
+                "On iPhone, add this website to your Home Screen first, then open it from the Home Screen and enable notifications there.";
+        }
+        return;
+    }
+
+    try {
+        if (button) button.disabled = true;
+        if (statusEl) statusEl.textContent = "Turning on notifications...";
+
+        const permission = await Notification.requestPermission();
+
+        if (permission !== "granted") {
+            if (statusEl) {
+                statusEl.textContent = "Notifications were not allowed.";
+            }
+            return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+
+        let subscription =
+            await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+        }
+
+        const json = subscription.toJSON();
+
+        await supabaseClient
+            .from("push_subscriptions")
+            .delete()
+            .eq("user_id", currentUser.id);
+
+        const { error } = await supabaseClient
+            .from("push_subscriptions")
+            .insert({
+                user_id: currentUser.id,
+                endpoint: subscription.endpoint,
+                p256dh: json.keys.p256dh,
+                auth: json.keys.auth
+            });
+
+        if (error) throw error;
+
+        if (statusEl) {
+            statusEl.textContent = "Notifications are enabled on this device 🔔";
+        }
+
+        if (button) {
+            button.textContent = "✓ Notifications enabled";
+        }
+
+    } catch (error) {
+        console.error("Notification setup failed:", error);
+
+        if (statusEl) {
+            statusEl.textContent =
+                "Could not enable notifications. Please try again.";
+        }
+    } finally {
+        if (button) button.disabled = false;
+    }
+}
 let currentSession = null;
 let currentUser = null;
 let currentProfile = null;
@@ -5179,6 +5302,18 @@ function initializeApp() {
 initializeApp();
 
 </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+            .then(() => {
+                console.log("Service worker registered");
+            })
+            .catch((error) => {
+                console.error("Service worker registration failed:", error);
+            });
+    });
+}
+</script>
 </body>
 </html>
