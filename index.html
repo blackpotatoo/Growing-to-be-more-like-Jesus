@@ -4416,9 +4416,11 @@ function prepareBibleVersesForTools() {
     if (!chapterText) return;
 
     const verseNumbers =
-        chapterText.querySelectorAll(".v");
+        Array.from(
+            chapterText.querySelectorAll(".v")
+        );
 
-    verseNumbers.forEach((verseElement) => {
+    verseNumbers.forEach((verseElement, index) => {
         const verseNumber =
             parseInt(
                 verseElement.getAttribute("data-number") ||
@@ -4431,17 +4433,75 @@ function prepareBibleVersesForTools() {
         verseElement.dataset.verseNumber =
             verseNumber;
 
-        verseElement.style.cursor =
-            "pointer";
+        const parent =
+            verseElement.parentNode;
+
+        if (!parent) return;
+
+        let verseText =
+            parent.querySelector(
+                `[data-bible-verse-text="${verseNumber}"]`
+            );
+
+        if (!verseText) {
+            verseText =
+                document.createElement("span");
+
+            verseText.dataset.bibleVerseText =
+                verseNumber;
+
+            verseText.className =
+                "bible-verse-text";
+
+            const nextVerse =
+                verseNumbers[index + 1];
+
+            parent.insertBefore(
+                verseText,
+                verseElement.nextSibling
+            );
+
+            let node =
+                verseText.nextSibling;
+
+            while (
+                node &&
+                node !== nextVerse
+            ) {
+                if (
+                    node.nodeType === 1 &&
+                    node.classList?.contains("v")
+                ) {
+                    break;
+                }
+
+                const nextNode =
+                    node.nextSibling;
+
+                verseText.appendChild(node);
+
+                node = nextNode;
+            }
+        }
+
+        const selectVerse = () => {
+            selectBibleVerseForTools(
+                verseNumber,
+                verseElement
+            );
+        };
+
+        verseElement.style.cursor = "pointer";
+        verseText.style.cursor = "pointer";
 
         verseElement.addEventListener(
             "click",
-            () => {
-                selectBibleVerseForTools(
-                    verseNumber,
-                    verseElement
-                );
-            }
+            selectVerse
+        );
+
+        verseText.addEventListener(
+            "click",
+            selectVerse
         );
     });
 }
@@ -4536,28 +4596,25 @@ function applyBibleHighlight(color) {
         purple: "rgba(141, 120, 163, 0.28)"
     };
 
-    const chosenColor = colors[color];
+    const chosenColor =
+        colors[color];
 
     if (!chosenColor) return;
+
+    const verseNumber =
+        selectedBibleVerseForTools;
 
     const verseElement =
         selectedBibleVerseElement;
 
-    const chapterText =
-        document.getElementById("bibleChapterText");
+    const parent =
+        verseElement.parentNode;
 
-    const allVerseNumbers =
-        Array.from(
-            chapterText.querySelectorAll(".v")
+    const verseText =
+        parent?.querySelector(
+            `[data-bible-verse-text="${verseNumber}"]`
         );
 
-    const currentIndex =
-        allVerseNumbers.indexOf(verseElement);
-
-    const nextVerse =
-        allVerseNumbers[currentIndex + 1] || null;
-
-    /* Highlight the verse number */
     verseElement.style.background =
         chosenColor;
 
@@ -4567,68 +4624,18 @@ function applyBibleHighlight(color) {
     verseElement.style.padding =
         "2px 2px 2px 4px";
 
-    /* Highlight the actual verse words */
-    const parent =
-        verseElement.parentNode;
+    if (verseText) {
+        verseText.style.background =
+            chosenColor;
 
-    if (parent) {
-        const existingHighlight =
-            parent.querySelector(
-                `[data-manual-highlight-verse="${selectedBibleVerseForTools}"]`
-            );
+        verseText.style.borderRadius =
+            "0 5px 5px 0";
 
-        if (existingHighlight) {
-            existingHighlight.style.background =
-                chosenColor;
+        verseText.style.padding =
+            "2px 4px 2px 2px";
 
-            existingHighlight.dataset.highlightColor =
-                color;
-        } else {
-            const highlight =
-                document.createElement("span");
-
-            highlight.dataset.manualHighlightVerse =
-                selectedBibleVerseForTools;
-
-            highlight.dataset.highlightColor =
-                color;
-
-            highlight.style.background =
-                chosenColor;
-
-            highlight.style.borderRadius =
-                "0 5px 5px 0";
-
-            highlight.style.padding =
-                "2px 4px 2px 2px";
-
-            parent.insertBefore(
-                highlight,
-                verseElement.nextSibling
-            );
-
-            let node =
-                highlight.nextSibling;
-
-            while (
-                node &&
-                node !== nextVerse
-            ) {
-                if (
-                    node.nodeType === 1 &&
-                    node.classList?.contains("v")
-                ) {
-                    break;
-                }
-
-                const nextNode =
-                    node.nextSibling;
-
-                highlight.appendChild(node);
-
-                node = nextNode;
-            }
-        }
+        verseText.dataset.highlightColor =
+            color;
     }
 
     verseElement.dataset.highlightColor =
@@ -4638,18 +4645,37 @@ function applyBibleHighlight(color) {
 }
 
 function removeBibleHighlight() {
-    if (!selectedBibleVerseElement) return;
+    if (!selectedBibleVerseElement || !selectedBibleVerseForTools) {
+        return;
+    }
 
-    selectedBibleVerseElement.style.background =
-        "";
+    const verseNumber =
+        selectedBibleVerseForTools;
 
-    selectedBibleVerseElement.style.borderRadius =
-        "";
+    const verseElement =
+        selectedBibleVerseElement;
 
-    selectedBibleVerseElement.style.padding =
-        "";
+    const parent =
+        verseElement.parentNode;
 
-    delete selectedBibleVerseElement.dataset.highlightColor;
+    const verseText =
+        parent?.querySelector(
+            `[data-bible-verse-text="${verseNumber}"]`
+        );
+
+    verseElement.style.background = "";
+    verseElement.style.borderRadius = "";
+    verseElement.style.padding = "";
+
+    delete verseElement.dataset.highlightColor;
+
+    if (verseText) {
+        verseText.style.background = "";
+        verseText.style.borderRadius = "";
+        verseText.style.padding = "";
+
+        delete verseText.dataset.highlightColor;
+    }
 
     hideBibleHighlightToolbar();
 }
