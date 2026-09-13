@@ -2163,9 +2163,17 @@ textarea:focus,
     Saved ✓
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* SUPABASE CONNECTION */
 
+const SUPABASE_URL = "https://zhrvhzhcyjiyfjlijfmj.supabase.co/rest/v1/";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_79IVVkEBiRMP2gXdXcDzwA_TzT2tiWN";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
 /* =========================================================
    DAILY VERSES
    KJV — public domain
